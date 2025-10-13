@@ -58,22 +58,32 @@ struct AIScoreScreen: View {
             HStack(alignment: .top) {
                 VStack {
                     Spacer()
-                    Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
-                        viewState.playVoice(message: text)
-                    }, label: {
-                        Image(systemName: "speaker.wave.2.fill")
-                            .font(.system(size: 24))
-                    })
+                    ZStack(alignment: .bottomLeading) {
+                        Button(action: {
+                            let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
+                            viewState.playVoice(message: text)
+                        }, label: {
+                            Image(systemName: "speaker.wave.2.fill")
+                                .font(.system(size: 24))
+                        })
+                        
+                        
+                        VerticalTextView(haiku.name, spacing: 0)
+                            .font(.subheadline)
+                            .offset(x: 40, y: -40)
+                    }
                 }
                 
                 Spacer()
                 
                 VerticalTextView(haiku.lower, spacing: 0)
+                    .font(.title)
                     .padding(.trailing)
                 VerticalTextView(haiku.middle, spacing: 0)
+                    .font(.title)
                     .padding(.trailing)
                 VerticalTextView(haiku.upper, spacing: 0)
+                    .font(.title)
                 
                 Spacer()
                 
