@@ -59,7 +59,7 @@ struct SakukuScreen: View {
                 .padding(.top, 16)
                 
                 NavigationLink {
-                    ResultScreen(isPresnetType: $isPresnetType)
+                    AIScoreScreen(isPresnetType: $isPresnetType, upper: $upper, middle: $middle, lower: $lower)
                         .navigationBarBackButtonHidden(true)
                 } label: {
                     HStack {
