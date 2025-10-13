@@ -6,87 +6,66 @@
 //
 
 import SwiftUI
+import FoundationModels
 
-struct HaikuCardView: View {
-    @StateObject var viewState = VoiceBoxState()
-    
+struct HaikuScore: Identifiable {
+    let id: UUID = UUID()
     let haiku: Haiku
-    var haikuFont: Font = .title
-    var nameFont: Font = .subheadline
-    
-    var body: some View {
-        haikuView()
-    }
-    
-    private func haikuView() -> some View {
-        HStack(alignment: .top) {
-            VStack {
-                Spacer()
-                ZStack(alignment: .bottomLeading) {
-                    Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
-                        viewState.playVoice(message: text)
-                    }, label: {
-                        Image(systemName: "speaker.wave.2.fill")
-                            .font(.system(size: 24))
-                    })
-                    
-                    
-                    VerticalTextView(haiku.name, spacing: 0)
-                        .font(nameFont)
-                        .offset(x: 40, y: -40)
-                }
-            }
-            
-            Spacer()
-            
-            VerticalTextView(haiku.lower, spacing: 0)
-                .font(haikuFont)
-                .padding(.trailing)
-            VerticalTextView(haiku.middle, spacing: 0)
-                .font(haikuFont)
-                .padding(.trailing)
-            VerticalTextView(haiku.upper, spacing: 0)
-                .font(haikuFont)
-            
-            Spacer()
-            
-            Button(action: {
-                // TODO: お気に入り保存
-            }, label: {
-                Image(systemName: "star")
-                    .font(.system(size: 24))
-            })
-            
-        }
-    }
+    let evaluation: HaikuEvaluation
 }
 
 struct BattleScreen: View {
     let haikuList: [Haiku]
     
+    @State private var haikuScoreList: [HaikuScore] = []
+    private let session = LanguageModelSession()
+    
     var body: some View {
-        ScrollView {
-            ForEach(haikuList) { haiku in
-                haikuView(haiku: haiku)
+        Group {
+            if session.isResponding || haikuList.count != haikuScoreList.count {
+                Spacer()
+                ProgressView()
+                Spacer()
+            } else {
+                ScrollView {
+                    ForEach(haikuScoreList) { haikuScore in
+                        haikuView(haikuScore: haikuScore)
+                    }
+                }
             }
+        }.task {
+            for haiku in haikuList {
+                do {
+                    let result = try await session.respond(
+                        to: haiku.upper + haiku.middle + haiku.lower,
+                        generating: HaikuEvaluation.self
+                    )
+                    
+                    haikuScoreList.append(.init(haiku: haiku, evaluation: result.content))
+                    
+                } catch {
+                    haikuScoreList.append(.init(haiku: haiku, evaluation: .init(score: 0, comment: "AIのスコアリングに失敗しました")))
+                }
+            }
+            
+            haikuScoreList.sort { $0.evaluation.score > $1.evaluation.score }
         }
-        
     }
     
-    private func haikuView(haiku: Haiku) -> some View {
+    private func haikuView(haikuScore: HaikuScore) -> some View {
         VStack {
-            HaikuCardView(haiku: .init(upper: haiku.upper, middle: haiku.middle, lower: haiku.lower, name: haiku.name), haikuFont: .title2, nameFont: .caption)
+            HaikuCardView(haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
                 .frame(height: 200)
                 .padding()
                 
             HStack {
-                Text("95点")
+                Text("\(haikuScore.evaluation.score)点")
                 
                 Divider()
                 
                 NavigationLink {
-                    AIScoreScreen(isPresnetType: .constant(.ai), haiku: Haiku(upper: "", middle: "", lower: "", name: ""))
+                    // TODO:isPresnetTypeを渡す
+                    AIScoreScreen(isPresnetType: .constant(.ai), haiku: haikuScore.haiku)
                     
                 } label: {
                     Text("詳細を見る")
