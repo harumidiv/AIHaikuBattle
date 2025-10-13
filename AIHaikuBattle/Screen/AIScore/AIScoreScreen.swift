@@ -9,7 +9,7 @@ import SwiftUI
 import FoundationModels
 
 struct AIScoreScreen: View {
-    @StateObject var viewState = ContentViewState()
+    @StateObject var viewState = AIScoreScreenState()
     @Binding var isPresnetType: PresentType?
     
     @Binding var upper: String

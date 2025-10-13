@@ -13,13 +13,13 @@ struct SakukuScreen: View {
     @State private var upper = ""
     @State private var middle = ""
     @State private var lower = ""
+    @State private var name = ""
     @State private var isSending = false
     
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 
-                // 入力フォーム
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("上の句（5文字）")
@@ -51,7 +51,7 @@ struct SakukuScreen: View {
                         Text("名前")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        TextField("", text: $lower)
+                        TextField("", text: $name)
                             .textFieldStyle(.roundedBorder)
                     }
                 }
@@ -78,6 +78,15 @@ struct SakukuScreen: View {
             .padding()
             .navigationTitle("1人で詠む")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        isPresnetType = nil
+                    }) {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
         }
         
     }

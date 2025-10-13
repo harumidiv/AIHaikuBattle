@@ -1,53 +1,23 @@
 //
-//  ContentView.swift
+//  AIScoreScreenState.swift
 //  AIHaikuBattle
 //
 //  Created by 佐川 晴海 on 2025/10/13.
 //
 
-import SwiftUI
-
-import SwiftUI
 import AVFoundation
 import Combine
 import voicevox_core
 
-struct ContentView: View {
-    @StateObject var viewState = ContentViewState()
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            TextField("Voice Message", text: Binding(get: { viewState.message }, set: { viewState.message = $0 }))
-                .textFieldStyle(.roundedBorder)
-
-            Button {
-                if viewState.message.isEmpty == false {
-                    viewState.playVoice(message: viewState.message)
-                } else {
-                    viewState.playVoice(message: "テキストを入力するのだ")
-                }
-            } label: {
-                Text("Play")
-            }
-        }
-        .padding()
-        .onAppear {
-            viewState.setup()
-        }
-    }
-}
-
-#Preview {
-    ContentView()
-}
-
-class ContentViewState: ObservableObject {
+final class AIScoreScreenState: ObservableObject {
     @Published var message: String = ""
 
     private var synthesizer: OpaquePointer?
     private var audioPlayer: AVAudioPlayer?
 
     func setup() {
+        setupAudioSession()
+        
         // Resource URL
         let resourcePath = Bundle.main.resourcePath!
         let resourceURL = URL(fileURLWithPath: resourcePath)
@@ -142,6 +112,19 @@ class ContentViewState: ObservableObject {
         }
     }
     
+    
+    private func setupAudioSession() {
+        do {
+            // カテゴリを.playbackに設定
+            // playbackは、サイレントスイッチがONでも音が鳴るカテゴリ
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
+            // AVAudioSessionをアクティブ化
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("AVAudioSessionの設定に失敗しました: \(error.localizedDescription)")
+        }
+    }
+    
     func playVoice(message: String) {
         // Generate
         let ttsOptions = voicevox_make_default_tts_options()
@@ -189,10 +172,4 @@ class ContentViewState: ObservableObject {
         }
         try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
     }
-}
-
-
-
-#Preview {
-    ContentView()
 }

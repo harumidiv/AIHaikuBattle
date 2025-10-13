@@ -49,7 +49,7 @@ struct TitleScreen: View {
                 }
             }
             
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .center, spacing: 10) {
                 HStack {
                     Spacer()
                     Text("ひとりで")
@@ -57,7 +57,7 @@ struct TitleScreen: View {
                         .foregroundColor(.secondary)
                     Spacer()
                 }
-                Divider()
+                border
                 
                 Button(action: {
                     isPresnetType = .single
@@ -67,11 +67,11 @@ struct TitleScreen: View {
                         .padding()
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
+                .padding(.bottom, 48)
                 
-                // 友達と遊ぶモードのセクション
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .center, spacing: 10) {
                     HStack {
                         Spacer()
                         Text("だれかと")
@@ -79,7 +79,7 @@ struct TitleScreen: View {
                             .foregroundColor(.secondary)
                         Spacer()
                     }
-                    Divider()
+                    border
                     
                     Button(action: {
                         isPresnetType = .ai
@@ -89,7 +89,7 @@ struct TitleScreen: View {
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                     }
                     
                     Button(action: {
@@ -100,19 +100,20 @@ struct TitleScreen: View {
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                     }
                 }
+                .padding(.bottom, 48)
                 
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .center, spacing: 10) {
                     HStack {
                         Spacer()
-                        Text("おもひで")
+                        Text("保存したおもひで")
                             .font(.headline)
                             .foregroundColor(.secondary)
                         Spacer()
                     }
-                    Divider()
+                    border
                     
                     Button(action: {
                         isPresnetType = .favorite
@@ -122,7 +123,7 @@ struct TitleScreen: View {
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                     }
                     
                 }
@@ -131,6 +132,12 @@ struct TitleScreen: View {
             }
             .padding()
         }
+    }
+    
+    var border: some View {
+        Divider()
+            .frame(width: 200)
+            .padding(.vertical, 10)
     }
 }
 
