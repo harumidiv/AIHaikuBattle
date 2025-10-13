@@ -15,6 +15,8 @@ struct HaikuScore: Identifiable {
 }
 
 struct BattleScreen: View {
+    @Binding var isPresnetType: PresentType?
+    
     let haikuList: [Haiku]
     
     @State private var haikuScoreList: [HaikuScore] = []
@@ -65,7 +67,7 @@ struct BattleScreen: View {
                 
                 NavigationLink {
                     // TODO:isPresnetTypeを渡す
-                    AIScoreScreen(isPresnetType: .constant(.ai), haiku: haikuScore.haiku)
+                    AIScoreScreen(isPresnetType: .constant(.ai), haiku: haikuScore.haiku, evaluation: haikuScore.evaluation)
                     
                 } label: {
                     Text("詳細を見る")
@@ -88,5 +90,5 @@ struct BattleScreen: View {
         Haiku(upper: "冬しずか", middle: "こたつの中で", lower: "猫まどろむ", name: "みさき"),
         Haiku(upper: "春しぶき", middle: "川面きらめき", lower: "橋の上", name: "ゆうと")
     ]
-    return BattleScreen(haikuList: stubs)
+    BattleScreen(isPresnetType: .constant(.ai), haikuList: stubs)
 }

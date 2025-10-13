@@ -13,9 +13,9 @@ struct AIScoreScreen: View {
     @Binding var isPresnetType: PresentType?
     
     let haiku: Haiku
+    var evaluation: HaikuEvaluation?
     
     @State private var haikuEvaluation: HaikuEvaluation?
-    
     
     private let session = LanguageModelSession()
     
@@ -25,16 +25,20 @@ struct AIScoreScreen: View {
                 viewState.setup()
             }
             .task {
-                do {
-                    let result = try await session.respond(
-                        to: haiku.upper + haiku.middle + haiku.lower,
-                        generating: HaikuEvaluation.self
-                    )
-                    
-                    haikuEvaluation = result.content
-                    
-                } catch {
-                    print("エラー:", error.localizedDescription)
+                if evaluation == nil {
+                    do {
+                        let result = try await session.respond(
+                            to: haiku.upper + haiku.middle + haiku.lower,
+                            generating: HaikuEvaluation.self
+                        )
+                        
+                        haikuEvaluation = result.content
+                        
+                    } catch {
+                        print("エラー:", error.localizedDescription)
+                    }
+                } else {
+                    haikuEvaluation = evaluation
                 }
             }
             .toolbar {
@@ -43,11 +47,13 @@ struct AIScoreScreen: View {
                         .font(.headline)
                 }
                 
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        isPresnetType = nil
-                    }) {
-                        Image(systemName: "house")
+                if evaluation == nil {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            isPresnetType = nil
+                        }) {
+                            Image(systemName: "house")
+                        }
                     }
                 }
             }

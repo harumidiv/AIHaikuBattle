@@ -16,6 +16,11 @@ struct Haiku: Hashable, Identifiable {
 }
 
 struct SakukuScreen: View {
+    enum SakukuTransition: Hashable {
+        case sakuku
+        case aiScore
+        case battle
+    }
     @Binding var isPresnetType: PresentType?
     
     var haikuList: [Haiku]
@@ -51,8 +56,17 @@ struct SakukuScreen: View {
             
             bottomButton
         }
-        .navigationDestination(for: Haiku.self) { newHaiku in
-            SakukuScreen(isPresnetType: $isPresnetType, haikuList: haikuList + [newHaiku])
+        .navigationDestination(for: SakukuTransition.self) { transition in
+            let newHaikuList = haikuList + [
+                Haiku(upper: upper, middle: middle, lower: lower, name: name)]
+            switch transition {
+            case .aiScore:
+                SakukuScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
+            case .battle:
+                BattleScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
+            case .sakuku:
+                SakukuScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
+            }
         }
     }
     
@@ -67,23 +81,40 @@ struct SakukuScreen: View {
             if haikuList.isEmpty {
                 nextSakukuButton(title: "AIに回す")
             } else {
-                aiScoreButton // TODO バトル画面に飛ばす
+                battleButton
             }
         case .friend:
             Spacer()
             nextSakukuButton(title: "次のともだちに回す")
             if haikuList.count >= 1 {
-                aiScoreButton // TODO バトル画面に飛ばす
+                battleButton
             }
         case nil:
             EmptyView()
         }
     }
     
+    var battleButton: some View {
+        Button(action: {
+            path.append(SakukuTransition.battle)
+        }, label: {
+            HStack {
+                Text("バトル！")
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(12)
+        })
+        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+        .padding(.horizontal, 40)
+        .padding(.top, 10)
+    }
+    
     
     private func nextSakukuButton(title: String) -> some View {
         Button(action: {
-            path.append(Haiku(upper: upper, middle: middle, lower: lower, name: name))
+            path.append(SakukuTransition.sakuku)
         }, label: {
             HStack {
                 Text(title)
