@@ -62,7 +62,7 @@ struct AIScoreScreen: View {
                     VStack {
                         Spacer()
                         Button(action: {
-                            let text = upper + "ーー " + middle + "ーー " + lower + "ーー "
+                            let text = upper + "  " + middle + "  " + lower
                             viewState.playVoice(message: text)
                         }, label: {
                             Image(systemName: "speaker.wave.2.fill")
