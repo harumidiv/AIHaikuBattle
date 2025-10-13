@@ -10,9 +10,7 @@ import SwiftUI
 enum PresentType: Identifiable, Hashable {
     case single
     case ai
-    case double
-    case favorite
-    case tutorial
+    case friend
     
     var id: Self { self }
 }
@@ -25,15 +23,11 @@ struct TitleScreen: View {
             .fullScreenCover(item: $isPresnetType) { type in
                 switch type {
                 case .single:
-                    SakukuScreen(isPresnetType: $isPresnetType)
+                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
                 case .ai:
-                    SakukuScreen(isPresnetType: $isPresnetType)
-                case .double:
-                    SakukuScreen(isPresnetType: $isPresnetType)
-                case .favorite:
-                    SakukuScreen(isPresnetType: $isPresnetType)
-                case .tutorial:
-                    SakukuScreen(isPresnetType: $isPresnetType)
+                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
+                case .friend:
+                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
                 }
             }
     }
@@ -45,7 +39,7 @@ struct TitleScreen: View {
                 
                 
                 Button("", systemImage: "info.circle") {
-                    isPresnetType = .tutorial
+//                    isPresnetType = .tutorial
                 }
             }
             
@@ -93,9 +87,9 @@ struct TitleScreen: View {
                     }
                     
                     Button(action: {
-                        isPresnetType = .double
+                        isPresnetType = .friend
                     }) {
-                        Text("ふたりで詠む")
+                        Text("ともだちと詠む")
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.gray.opacity(0.2))
@@ -116,7 +110,7 @@ struct TitleScreen: View {
                     border
                     
                     Button(action: {
-                        isPresnetType = .favorite
+//                        isPresnetType = .favorite
                     }) {
                         Text("句集")
                             .frame(maxWidth: .infinity)

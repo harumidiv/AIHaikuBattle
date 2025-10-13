@@ -12,9 +12,7 @@ struct AIScoreScreen: View {
     @StateObject var viewState = AIScoreScreenState()
     @Binding var isPresnetType: PresentType?
     
-    @Binding var upper: String
-    @Binding var middle: String
-    @Binding var lower: String
+    let haiku: Haiku
     
     @State private var haikuEvaluation: HaikuEvaluation?
     
@@ -29,7 +27,7 @@ struct AIScoreScreen: View {
             .task {
                 do {
                     let result = try await session.respond(
-                        to: upper + middle + lower,
+                        to: haiku.upper + haiku.middle + haiku.lower,
                         generating: HaikuEvaluation.self
                     )
                     
@@ -57,41 +55,40 @@ struct AIScoreScreen: View {
     
     private func content() -> some View {
         VStack {
-            VStack {
-                HStack(alignment: .top) {
-                    VStack {
-                        Spacer()
-                        Button(action: {
-                            let text = upper + "  " + middle + "  " + lower
-                            viewState.playVoice(message: text)
-                        }, label: {
-                            Image(systemName: "speaker.wave.2.fill")
-                                .font(.system(size: 24))
-                        })
-                    }
-                    
+            HStack(alignment: .top) {
+                VStack {
                     Spacer()
-                    
-                    VerticalTextView(lower, spacing: 0)
-                        .padding(.trailing)
-                    VerticalTextView(middle, spacing: 0)
-                        .padding(.trailing)
-                    VerticalTextView(upper, spacing: 0)
-                    
-                    Spacer()
-                    
                     Button(action: {
-                        // TODO: お気に入り保存
+                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
+                        viewState.playVoice(message: text)
                     }, label: {
-                        Image(systemName: "star")
+                        Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
                     })
-                    
                 }
-                .padding()
-                .font(.system(size: 30))
+                
+                Spacer()
+                
+                VerticalTextView(haiku.lower, spacing: 0)
+                    .padding(.trailing)
+                VerticalTextView(haiku.middle, spacing: 0)
+                    .padding(.trailing)
+                VerticalTextView(haiku.upper, spacing: 0)
+                
+                Spacer()
+                
+                Button(action: {
+                    // TODO: お気に入り保存
+                }, label: {
+                    Image(systemName: "star")
+                        .font(.system(size: 24))
+                })
+                
             }
+            .padding()
+            .font(.system(size: 30))
             .frame(height: 250)
+            
             
             Divider()
             
@@ -137,6 +134,6 @@ struct AIScoreScreen: View {
 
 #Preview {
     NavigationView {
-        AIScoreScreen(isPresnetType: .constant(.ai), upper: .constant("夏盛り"), middle: .constant("ラムネの泡と"), lower: .constant("青い空"))
+        AIScoreScreen(isPresnetType: .constant(.ai), haiku: .init(upper: "夏盛り", middle: "ラムネの泡と", lower: "青い空", name: "じゅんぺい"))
     }
 }
