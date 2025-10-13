@@ -16,8 +16,6 @@ struct Haiku: Hashable, Identifiable {
     let name: String
 }
 
-// TODO: 次の友達に回す時キーボードのフォーカスを外す
-
 struct SakukuScreen: View {
     enum SakukuTransition: Hashable {
         case aiScore

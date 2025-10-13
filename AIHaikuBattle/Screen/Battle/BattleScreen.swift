@@ -77,8 +77,7 @@ struct BattleScreen: View {
                 Divider()
                 
                 NavigationLink {
-                    // TODO:isPresnetTypeを渡す
-                    AIScoreScreen(isPresnetType: .constant(.ai), haiku: haikuScore.haiku, evaluation: haikuScore.evaluation)
+                    AIScoreScreen(isPresnetType: $isPresnetType, haiku: haikuScore.haiku, evaluation: haikuScore.evaluation)
                     
                 } label: {
                     Text("詳細を見る")
