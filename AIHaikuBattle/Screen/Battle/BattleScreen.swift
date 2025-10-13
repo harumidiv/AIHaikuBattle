@@ -34,6 +34,15 @@ struct BattleScreen: View {
                         haikuView(haikuScore: haikuScore)
                     }
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            isPresnetType = nil
+                        }) {
+                            Image(systemName: "house")
+                        }
+                    }
+                }
             }
         }
         .task {

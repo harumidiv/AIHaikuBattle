@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FoundationModels
 
 struct Haiku: Hashable, Identifiable {
     let id = UUID()
@@ -33,6 +34,8 @@ struct SakukuScreen: View {
     @State private var lower = ""
     @State private var name = ""
     
+    private let session = LanguageModelSession()
+    
     var navigationTitle: String {
         switch isPresnetType {
         case .single:
@@ -41,6 +44,7 @@ struct SakukuScreen: View {
             if haikuList.isEmpty {
                 return "あなたの番"
             } else {
+                // 💣⚠️この文字で判定処理入れているのでいじる時注意
                 return "AIの番"
             }
         case .friend:
@@ -50,42 +54,64 @@ struct SakukuScreen: View {
         }
     }
     
+    var isAI: Bool {
+        isPresnetType == .ai && haikuList.count == 1
+    }
+    
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
-                contentView()
-            }
-                .navigationTitle(navigationTitle)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            isPresnetType = nil
-                        }) {
-                            Image(systemName: "xmark")
+                if isAI {
+                    ZStack {
+                        contentView()
+                        
+                        if session.isResponding {
+                            ProgressView()
                         }
                     }
-                    
-                    
-                    // TODO: AIの読み込みが終わって入力したらバトルに移動できるようにする
-//                    if isPresnetType == .ai {
-//                        
-//                    }
-                    
-                    if isPresnetType == .friend && haikuList.count >= 1 {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button(action: {
-                                path.append(SakukuTransition.battle)
-                            }) {
-                                HStack {
-                                    Image(systemName: "burst")
-                                    Text("バトル！")
-                                }
-                            }
-                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
-                        }
+                } else {
+                    contentView()
+                }
+            }
+            .navigationTitle(navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        isPresnetType = nil
+                    }) {
+                        Image(systemName: "xmark")
                     }
                 }
+                
+                if isAI && !session.isResponding {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            path.append(SakukuTransition.battle)
+                        }) {
+                            HStack {
+                                Image(systemName: "burst")
+                                Text("バトル！")
+                            }
+                        }
+                        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                    }
+                }
+                
+                if isPresnetType == .friend && haikuList.count >= 1 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            path.append(SakukuTransition.battle)
+                        }) {
+                            HStack {
+                                Image(systemName: "burst")
+                                Text("バトル！")
+                            }
+                        }
+                        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                    }
+                }
+            }
         }
     }
     
@@ -113,19 +139,15 @@ struct SakukuScreen: View {
     
     @ViewBuilder
     private var bottomButton: some View {
+        Spacer()
         switch isPresnetType {
         case .single:
-            Spacer()
             aiScoreButton
         case .ai:
-            Spacer()
             if haikuList.isEmpty {
                 nextSakukuButton(title: "AIに回す")
-            } else {
-                battleButton // AIの時は入力に触られたくないから別画面にしても良いかも？dissableにするだけで良い？
             }
         case .friend:
-            Spacer()
             nextSakukuButton(title: "次のともだちに回す")
         case nil:
             EmptyView()
@@ -161,6 +183,29 @@ struct SakukuScreen: View {
             middle = ""
             lower = ""
             name = ""
+            
+            // ここは切り替わる前なのでai動線で次へボタンが呼ばれたタイミングで通信を走らせる
+            if isPresnetType == .ai {
+                print("呼ばれたよ😺😺😺")
+                Task {
+                    do {
+                        let result = try await session.respond(
+                            to: "自由に俳句を作ってください",
+                            generating: AIHaiku.self
+                        )
+                        name = "AI詩人"
+                        upper = result.content.upper
+                        middle = result.content.middle
+                        lower = result.content.lower
+                        
+                    } catch {
+                        name = "AI詩人"
+                        upper = "オーバーフロー"
+                        middle = "良い俳句が"
+                        lower = "でてこない"
+                    }
+                }
+            }
             
         }, label: {
             HStack {
@@ -202,6 +247,7 @@ struct SakukuScreen: View {
                     .foregroundColor(.gray)
                 TextField("", text: $upper)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(isAI)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -210,6 +256,7 @@ struct SakukuScreen: View {
                     .foregroundColor(.gray)
                 TextField("", text: $middle)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(isAI)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -218,6 +265,7 @@ struct SakukuScreen: View {
                     .foregroundColor(.gray)
                 TextField("", text: $lower)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(isAI)
             }
             
             Divider()
@@ -228,6 +276,7 @@ struct SakukuScreen: View {
                     .foregroundColor(.gray)
                 TextField("", text: $name)
                     .textFieldStyle(.roundedBorder)
+                    .disabled(isAI)
             }
         }
         .padding(.horizontal, 20)
