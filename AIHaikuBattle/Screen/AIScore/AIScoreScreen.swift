@@ -9,7 +9,7 @@ import SwiftUI
 import FoundationModels
 
 struct AIScoreScreen: View {
-    @StateObject var viewState = AIScoreScreenState()
+    @StateObject var viewState = VoiceBoxState()
     @Binding var isPresnetType: PresentType?
     
     let haiku: Haiku
@@ -55,55 +55,59 @@ struct AIScoreScreen: View {
     
     private func content() -> some View {
         VStack {
-            HStack(alignment: .top) {
-                VStack {
-                    Spacer()
-                    ZStack(alignment: .bottomLeading) {
-                        Button(action: {
-                            let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
-                            viewState.playVoice(message: text)
-                        }, label: {
-                            Image(systemName: "speaker.wave.2.fill")
-                                .font(.system(size: 24))
-                        })
-                        
-                        
-                        VerticalTextView(haiku.name, spacing: 0)
-                            .font(.subheadline)
-                            .offset(x: 40, y: -40)
-                    }
-                }
-                
-                Spacer()
-                
-                VerticalTextView(haiku.lower, spacing: 0)
-                    .font(.title)
-                    .padding(.trailing)
-                VerticalTextView(haiku.middle, spacing: 0)
-                    .font(.title)
-                    .padding(.trailing)
-                VerticalTextView(haiku.upper, spacing: 0)
-                    .font(.title)
-                
-                Spacer()
-                
-                Button(action: {
-                    // TODO: お気に入り保存
-                }, label: {
-                    Image(systemName: "star")
-                        .font(.system(size: 24))
-                })
-                
-            }
-            .padding()
-            .font(.system(size: 30))
-            .frame(height: 250)
+            haikuView()
+                .padding()
+                .font(.system(size: 30))
+                .frame(height: 250)
             
             
             Divider()
             
             
             aiEvaluationView()
+        }
+    }
+    
+    private func haikuView() -> some View {
+        HStack(alignment: .top) {
+            VStack {
+                Spacer()
+                ZStack(alignment: .bottomLeading) {
+                    Button(action: {
+                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
+                        viewState.playVoice(message: text)
+                    }, label: {
+                        Image(systemName: "speaker.wave.2.fill")
+                            .font(.system(size: 24))
+                    })
+                    
+                    
+                    VerticalTextView(haiku.name, spacing: 0)
+                        .font(.subheadline)
+                        .offset(x: 40, y: -40)
+                }
+            }
+            
+            Spacer()
+            
+            VerticalTextView(haiku.lower, spacing: 0)
+                .font(.title)
+                .padding(.trailing)
+            VerticalTextView(haiku.middle, spacing: 0)
+                .font(.title)
+                .padding(.trailing)
+            VerticalTextView(haiku.upper, spacing: 0)
+                .font(.title)
+            
+            Spacer()
+            
+            Button(action: {
+                // TODO: お気に入り保存
+            }, label: {
+                Image(systemName: "star")
+                    .font(.system(size: 24))
+            })
+            
         }
     }
     

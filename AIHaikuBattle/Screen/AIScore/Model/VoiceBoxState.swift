@@ -1,5 +1,5 @@
 //
-//  AIScoreScreenState.swift
+//  VoiceBoxState.swift
 //  AIHaikuBattle
 //
 //  Created by 佐川 晴海 on 2025/10/13.
@@ -9,7 +9,7 @@ import AVFoundation
 import Combine
 import voicevox_core
 
-final class AIScoreScreenState: ObservableObject {
+final class VoiceBoxState: ObservableObject {
     @Published var message: String = ""
 
     private var synthesizer: OpaquePointer?

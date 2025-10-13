@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct Haiku: Hashable {
+struct Haiku: Hashable, Identifiable {
+    let id = UUID()
     let upper: String
     let middle: String
     let lower: String
