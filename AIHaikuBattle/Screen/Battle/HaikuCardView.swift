@@ -16,6 +16,9 @@ struct HaikuCardView: View {
     
     var body: some View {
         haikuView()
+            .onAppear {
+                viewState.setup()
+            }
     }
     
     private func haikuView() -> some View {

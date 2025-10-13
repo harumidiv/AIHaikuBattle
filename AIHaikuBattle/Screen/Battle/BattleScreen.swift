@@ -35,7 +35,9 @@ struct BattleScreen: View {
                     }
                 }
             }
-        }.task {
+        }
+        .task {
+            if !haikuScoreList.isEmpty { return }
             for haiku in haikuList {
                 do {
                     let result = try await session.respond(
