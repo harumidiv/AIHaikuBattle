@@ -11,7 +11,7 @@ import SwiftUI
 struct AIHaikuBattleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TitleScreen()
         }
     }
 }
