@@ -37,7 +37,6 @@ struct TitleScreen: View {
             HStack {
                 Spacer()
                 
-                
                 Button("", systemImage: "info.circle") {
 //                    isPresnetType = .tutorial
                 }

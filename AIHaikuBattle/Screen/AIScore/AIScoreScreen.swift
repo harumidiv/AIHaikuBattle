@@ -61,10 +61,9 @@ struct AIScoreScreen: View {
     
     private func content() -> some View {
         VStack {
-            haikuView()
+            HaikuCardView(haiku: haiku)
                 .padding()
-                .font(.system(size: 30))
-                .frame(height: 250)
+                .frame(height: 300)
             
             
             Divider()
@@ -80,7 +79,7 @@ struct AIScoreScreen: View {
                 Spacer()
                 ZStack(alignment: .bottomLeading) {
                     Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower
+                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "       " + haiku.name
                         viewState.playVoice(message: text)
                     }, label: {
                         Image(systemName: "speaker.wave.2.fill")
