@@ -15,15 +15,16 @@ struct Haiku: Hashable, Identifiable {
     let name: String
 }
 
+// TODO: 次の友達に回す時キーボードのフォーカスを外す
+
 struct SakukuScreen: View {
     enum SakukuTransition: Hashable {
-        case sakuku
         case aiScore
         case battle
     }
     @Binding var isPresnetType: PresentType?
     
-    var haikuList: [Haiku]
+    @State private var haikuList: [Haiku] = []
     
     @State private var path = NavigationPath()
     
@@ -31,10 +32,30 @@ struct SakukuScreen: View {
     @State private var middle = ""
     @State private var lower = ""
     @State private var name = ""
+    
+    var navigationTitle: String {
+        switch isPresnetType {
+        case .single:
+            return "1人で詠む"
+        case .ai:
+            if haikuList.isEmpty {
+                return "あなたの番"
+            } else {
+                return "AIの番"
+            }
+        case .friend:
+            return "\(haikuList.count+1)人目"
+        case nil:
+            return ""
+        }
+    }
+    
     var body: some View {
         NavigationStack(path: $path) {
-            contentView()
-                .navigationTitle("1人で詠む")
+            ScrollView {
+                contentView()
+            }
+                .navigationTitle(navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
@@ -42,6 +63,26 @@ struct SakukuScreen: View {
                             isPresnetType = nil
                         }) {
                             Image(systemName: "xmark")
+                        }
+                    }
+                    
+                    
+                    // TODO: AIの読み込みが終わって入力したらバトルに移動できるようにする
+//                    if isPresnetType == .ai {
+//                        
+//                    }
+                    
+                    if isPresnetType == .friend && haikuList.count >= 1 {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                path.append(SakukuTransition.battle)
+                            }) {
+                                HStack {
+                                    Image(systemName: "burst")
+                                    Text("バトル！")
+                                }
+                            }
+                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
                         }
                     }
                 }
@@ -57,15 +98,15 @@ struct SakukuScreen: View {
             bottomButton
         }
         .navigationDestination(for: SakukuTransition.self) { transition in
-            let newHaikuList = haikuList + [
-                Haiku(upper: upper, middle: middle, lower: lower, name: name)]
+            let newHaiku = Haiku(upper: upper, middle: middle, lower: lower, name: name)
+            let newHaikuList = haikuList + [newHaiku]
             switch transition {
             case .aiScore:
-                SakukuScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
+                AIScoreScreen(isPresnetType: $isPresnetType, haiku: newHaiku)
+                    .navigationBarBackButtonHidden(true)
             case .battle:
                 BattleScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
-            case .sakuku:
-                SakukuScreen(isPresnetType: $isPresnetType, haikuList: newHaikuList)
+                    .navigationBarBackButtonHidden(true)
             }
         }
     }
@@ -81,14 +122,11 @@ struct SakukuScreen: View {
             if haikuList.isEmpty {
                 nextSakukuButton(title: "AIに回す")
             } else {
-                battleButton
+                battleButton // AIの時は入力に触られたくないから別画面にしても良いかも？dissableにするだけで良い？
             }
         case .friend:
             Spacer()
             nextSakukuButton(title: "次のともだちに回す")
-            if haikuList.count >= 1 {
-                battleButton
-            }
         case nil:
             EmptyView()
         }
@@ -114,7 +152,16 @@ struct SakukuScreen: View {
     
     private func nextSakukuButton(title: String) -> some View {
         Button(action: {
-            path.append(SakukuTransition.sakuku)
+            // 1. haikuListに新しい俳句を追加
+            // haikuListが@Bindingであれば、この変更は親Viewにも伝わる
+            haikuList.append(Haiku(upper: upper, middle: middle, lower: lower, name: name))
+            
+            // 2. 入力フィールドをクリア
+            upper = ""
+            middle = ""
+            lower = ""
+            name = ""
+            
         }, label: {
             HStack {
                 Text(title)
@@ -130,9 +177,8 @@ struct SakukuScreen: View {
     }
     
     var aiScoreButton: some View {
-        NavigationLink {
-            AIScoreScreen(isPresnetType: $isPresnetType, haiku: Haiku(upper: upper, middle: middle, lower: lower, name: name))
-                .navigationBarBackButtonHidden(true)
+        Button {
+            path.append(SakukuTransition.aiScore)
             
         } label: {
             HStack {
@@ -190,5 +236,5 @@ struct SakukuScreen: View {
 }
 
 #Preview {
-    SakukuScreen(isPresnetType: .constant(.ai), haikuList: [])
+    SakukuScreen(isPresnetType: .constant(.ai))
 }

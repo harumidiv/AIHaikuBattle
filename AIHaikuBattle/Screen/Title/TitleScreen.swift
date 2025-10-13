@@ -23,11 +23,11 @@ struct TitleScreen: View {
             .fullScreenCover(item: $isPresnetType) { type in
                 switch type {
                 case .single:
-                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
+                    SakukuScreen(isPresnetType: $isPresnetType)
                 case .ai:
-                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
+                    SakukuScreen(isPresnetType: $isPresnetType)
                 case .friend:
-                    SakukuScreen(isPresnetType: $isPresnetType, haikuList: [])
+                    SakukuScreen(isPresnetType: $isPresnetType)
                 }
             }
     }
