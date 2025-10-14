@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AIHaikuBattleApp: App {
@@ -13,5 +14,6 @@ struct AIHaikuBattleApp: App {
         WindowGroup {
             TitleScreen()
         }
+        .modelContainer(for: HaikuModel.self)
     }
 }

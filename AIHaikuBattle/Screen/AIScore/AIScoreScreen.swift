@@ -5,19 +5,30 @@
 //  Created by 佐川 晴海 on 2025/10/13.
 //
 
-import SwiftUI
 import FoundationModels
+import SwiftUI
+import SwiftData
 
 struct AIScoreScreen: View {
     @StateObject var viewState = VoiceBoxState()
     @Binding var isPresnetType: PresentType?
-    
+
     let haiku: Haiku
     var evaluation: HaikuEvaluation?
     
     @State private var haikuEvaluation: HaikuEvaluation?
     
     private let session = LanguageModelSession()
+    
+    /// SwiftData
+    @Environment(\.modelContext) private var context
+    @Query private var haikus: [HaikuModel]
+    
+    private var isFavorite: Bool {
+        haikus.contains { storedHaiku in
+            storedHaiku == HaikuModel(haiku: haiku)
+        }
+    }
     
     var body: some View {
         content()
@@ -107,11 +118,22 @@ struct AIScoreScreen: View {
             Spacer()
             
             Button(action: {
-                // TODO: お気に入り保存
+                let newHaiku = HaikuModel(haiku: haiku)
+                
+                if isFavorite {
+                    context.insert(newHaiku)
+                } else {
+                    if let haikuToDelete = haikus.first(where: { $0 == newHaiku }) {
+                        context.delete(haikuToDelete)
+                    }
+                }
+                
             }, label: {
-                Image(systemName: "star")
+                Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.system(size: 24))
+                    .foregroundStyle(.yellow)
             })
+            .sensoryFeedback(.impact, trigger: isFavorite)
             
         }
     }
