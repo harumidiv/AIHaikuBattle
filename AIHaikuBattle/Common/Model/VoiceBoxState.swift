@@ -9,8 +9,9 @@ import AVFoundation
 import Combine
 import voicevox_core
 
-final class VoiceBoxState: ObservableObject {
+final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var message: String = ""
+    @Published var isPlaying: Bool = false
 
     private var synthesizer: OpaquePointer?
     private var audioPlayer: AVAudioPlayer?
@@ -148,8 +149,13 @@ final class VoiceBoxState: ObservableObject {
         // Play Audio
         do {
             audioPlayer = try AVAudioPlayer(data: data)
+            audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
+            
+            DispatchQueue.main.async {
+                self.isPlaying = true
+            }
         } catch {
             print("Failed to Play Audio: \(error)")
             return
@@ -171,5 +177,19 @@ final class VoiceBoxState: ObservableObject {
             return
         }
         try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+    }
+    
+    // MARK: - AVAudioPlayerDelegate
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        DispatchQueue.main.async {
+            self.isPlaying = false
+        }
+    }
+
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        DispatchQueue.main.async {
+            self.isPlaying = false
+        }
     }
 }

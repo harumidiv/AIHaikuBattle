@@ -96,6 +96,7 @@ struct AIScoreScreen: View {
                         Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
                     })
+                    .disabled(viewState.isPlaying)
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)

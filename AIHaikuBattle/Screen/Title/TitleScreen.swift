@@ -17,7 +17,6 @@ enum PresentType: Identifiable, Hashable {
 
 struct TitleScreen: View {
     @State private var isPresnetType: PresentType?
-    
     @State private var isPresentFavoriteScreen: Bool = false
     
     var body: some View {
@@ -123,7 +122,6 @@ struct TitleScreen: View {
                             .cornerRadius(10)
                             .foregroundColor(.primary)
                     }
-                    
                 }
                 
                 Spacer()
