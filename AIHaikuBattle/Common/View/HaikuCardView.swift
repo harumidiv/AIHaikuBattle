@@ -6,13 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HaikuCardView: View {
     @StateObject var viewState = VoiceBoxState()
+    @Environment(\.modelContext) private var context
+    @Query private var haikus: [HaikuModel]
     
     let haiku: Haiku
     var haikuFont: Font = .title
     var nameFont: Font = .subheadline
+    
+    private var isFavorite: Bool {
+        haikus.contains { storedHaiku in
+            storedHaiku == HaikuModel(haiku: haiku)
+        }
+    }
     
     var body: some View {
         haikuView()
@@ -33,6 +42,7 @@ struct HaikuCardView: View {
                         Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
                     })
+                    .disabled(viewState.isPlaying)
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)
@@ -55,11 +65,23 @@ struct HaikuCardView: View {
             Spacer()
             
             Button(action: {
-                // TODO: お気に入り保存
+                let newHaiku = HaikuModel(haiku: haiku)
+                
+                if isFavorite {
+                    if let haikuToDelete = haikus.first(where: { $0 == newHaiku }) {
+                        context.delete(haikuToDelete)
+                    }
+                } else {
+                    context.insert(newHaiku)
+                }
+                
             }, label: {
-                Image(systemName: "star")
+                Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.system(size: 24))
+                    .foregroundColor(.yellow)
+                    .symbolEffect(.bounce, value: isFavorite)
             })
+            .sensoryFeedback(.impact, trigger: isFavorite)
             
         }
     }

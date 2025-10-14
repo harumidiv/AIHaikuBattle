@@ -17,9 +17,13 @@ enum PresentType: Identifiable, Hashable {
 
 struct TitleScreen: View {
     @State private var isPresnetType: PresentType?
+    @State private var isPresentFavoriteScreen: Bool = false
     
     var body: some View {
-        content()
+        NavigationView {
+            content()
+                .navigationTitle("タイトル")
+        }
             .fullScreenCover(item: $isPresnetType) { type in
                 switch type {
                 case .single:
@@ -30,18 +34,13 @@ struct TitleScreen: View {
                     SakukuScreen(isPresnetType: $isPresnetType)
                 }
             }
+            .fullScreenCover(isPresented: $isPresentFavoriteScreen) {
+                FavoriteScreen(isPresented: $isPresentFavoriteScreen)
+            }
     }
     
     private func content() -> some View {
         VStack(spacing: 30) {
-            HStack {
-                Spacer()
-                
-                Button("", systemImage: "info.circle") {
-//                    isPresnetType = .tutorial
-                }
-            }
-            
             VStack(alignment: .center, spacing: 10) {
                 HStack {
                     Spacer()
@@ -109,16 +108,15 @@ struct TitleScreen: View {
                     border
                     
                     Button(action: {
-//                        isPresnetType = .favorite
+                        isPresentFavoriteScreen.toggle()
                     }) {
-                        Text("句集")
+                        Text("お気に入り")
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
                             .foregroundColor(.primary)
                     }
-                    
                 }
                 
                 Spacer()

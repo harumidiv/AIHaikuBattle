@@ -45,6 +45,7 @@ struct BattleScreen: View {
                 }
             }
         }
+        .navigationTitle("バトル結果")
         .task {
             if !haikuScoreList.isEmpty { return }
             for haiku in haikuList {

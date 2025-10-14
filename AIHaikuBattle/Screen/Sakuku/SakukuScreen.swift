@@ -14,6 +14,40 @@ struct Haiku: Hashable, Identifiable {
     let middle: String
     let lower: String
     let name: String
+    
+    init(upper: String, middle: String, lower: String, name: String) {
+        self.upper = upper
+        self.middle = middle
+        self.lower = lower
+        self.name = name
+    }
+    
+    init(haikuModel: HaikuModel) {
+        self.upper = haikuModel.upper
+        self.middle = haikuModel.middle
+        self.lower = haikuModel.lower
+        self.name = haikuModel.name
+    }
+}
+
+enum SakukuFocusFields: Hashable {
+    case upper
+    case middle
+    case lower
+    case name
+    
+    func next() -> SakukuFocusFields? {
+        switch self {
+        case .upper:
+            return .middle
+        case .middle:
+            return .lower
+        case .lower:
+            return .name
+        case .name:
+            return nil
+        }
+    }
 }
 
 struct SakukuScreen: View {
@@ -34,6 +68,10 @@ struct SakukuScreen: View {
     
     private let session = LanguageModelSession()
     
+    @State private var keyboardIsPresented: Bool = false
+    @FocusState private var focusedField: SakukuFocusFields?
+    @State private var isNeedNextBotton: Bool = false
+    
     var navigationTitle: String {
         switch isPresnetType {
         case .single:
@@ -42,7 +80,6 @@ struct SakukuScreen: View {
             if haikuList.isEmpty {
                 return "あなたの番"
             } else {
-                // 💣⚠️この文字で判定処理入れているのでいじる時注意
                 return "AIの番"
             }
         case .friend:
@@ -111,6 +148,17 @@ struct SakukuScreen: View {
                 }
             }
         }
+        .withKeyboardToolbar(keyboardIsPresented: $keyboardIsPresented, isNeedNextBotton: $isNeedNextBotton) {
+            focusedField = focusedField?.next()
+        }
+        .onChange(of: focusedField) {
+            switch focusedField {
+            case .upper, .middle, .lower:
+                isNeedNextBotton = true
+            default:
+                isNeedNextBotton = false
+            }
+        }
     }
     
     private func contentView() -> some View {
@@ -172,19 +220,12 @@ struct SakukuScreen: View {
     
     private func nextSakukuButton(title: String) -> some View {
         Button(action: {
-            // 1. haikuListに新しい俳句を追加
-            // haikuListが@Bindingであれば、この変更は親Viewにも伝わる
             haikuList.append(Haiku(upper: upper, middle: middle, lower: lower, name: name))
             
-            // 2. 入力フィールドをクリア
-            upper = ""
-            middle = ""
-            lower = ""
-            name = ""
+            initInputText()
             
             // ここは切り替わる前なのでai動線で次へボタンが呼ばれたタイミングで通信を走らせる
             if isPresnetType == .ai {
-                print("呼ばれたよ😺😺😺")
                 Task {
                     do {
                         let result = try await session.respond(
@@ -246,6 +287,7 @@ struct SakukuScreen: View {
                 TextField("", text: $upper)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .upper)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -255,6 +297,7 @@ struct SakukuScreen: View {
                 TextField("", text: $middle)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .middle)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -264,6 +307,7 @@ struct SakukuScreen: View {
                 TextField("", text: $lower)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .lower)
             }
             
             Divider()
@@ -275,10 +319,20 @@ struct SakukuScreen: View {
                 TextField("", text: $name)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .name)
             }
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
+    }
+    
+    private func initInputText() {
+        focusedField = nil
+        
+        upper = ""
+        middle = ""
+        lower = ""
+        name = ""
     }
 }
 
