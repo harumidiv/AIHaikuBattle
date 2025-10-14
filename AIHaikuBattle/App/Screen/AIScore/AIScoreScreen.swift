@@ -100,7 +100,7 @@ struct AIScoreScreen: View {
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)
-                        .font(.subheadline)
+                        .font(.hudemoji(size: 12))
                         .offset(x: 40, y: -40)
                 }
             }
@@ -108,13 +108,13 @@ struct AIScoreScreen: View {
             Spacer()
             
             VerticalTextView(haiku.lower, spacing: 0)
-                .font(.title)
+                .font(.hudemoji(size: 24))
                 .padding(.trailing)
             VerticalTextView(haiku.middle, spacing: 0)
-                .font(.title)
+                .font(.hudemoji(size: 24))
                 .padding(.trailing)
             VerticalTextView(haiku.upper, spacing: 0)
-                .font(.title)
+                .font(.hudemoji(size: 24))
             
             Spacer()
             
