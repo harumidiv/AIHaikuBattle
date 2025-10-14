@@ -226,7 +226,6 @@ struct SakukuScreen: View {
             
             // ここは切り替わる前なのでai動線で次へボタンが呼ばれたタイミングで通信を走らせる
             if isPresnetType == .ai {
-                print("呼ばれたよ😺😺😺")
                 Task {
                     do {
                         let result = try await session.respond(
@@ -333,7 +332,7 @@ struct SakukuScreen: View {
         upper = ""
         middle = ""
         lower = ""
-        name = ""        
+        name = ""
     }
 }
 

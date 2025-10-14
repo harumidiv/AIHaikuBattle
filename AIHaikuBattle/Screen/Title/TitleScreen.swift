@@ -20,7 +20,10 @@ struct TitleScreen: View {
     @State private var isPresentFavoriteScreen: Bool = false
     
     var body: some View {
-        content()
+        NavigationView {
+            content()
+                .navigationTitle("タイトル")
+        }
             .fullScreenCover(item: $isPresnetType) { type in
                 switch type {
                 case .single:
