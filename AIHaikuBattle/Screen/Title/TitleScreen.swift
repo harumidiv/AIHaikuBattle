@@ -18,6 +18,8 @@ enum PresentType: Identifiable, Hashable {
 struct TitleScreen: View {
     @State private var isPresnetType: PresentType?
     
+    @State private var isPresentFavoriteScreen: Bool = false
+    
     var body: some View {
         content()
             .fullScreenCover(item: $isPresnetType) { type in
@@ -29,6 +31,9 @@ struct TitleScreen: View {
                 case .friend:
                     SakukuScreen(isPresnetType: $isPresnetType)
                 }
+            }
+            .fullScreenCover(isPresented: $isPresentFavoriteScreen) {
+                FavoriteScreen(isPresented: $isPresentFavoriteScreen)
             }
     }
     
@@ -109,9 +114,9 @@ struct TitleScreen: View {
                     border
                     
                     Button(action: {
-//                        isPresnetType = .favorite
+                        isPresentFavoriteScreen.toggle()
                     }) {
-                        Text("句集")
+                        Text("お気に入り")
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.gray.opacity(0.2))

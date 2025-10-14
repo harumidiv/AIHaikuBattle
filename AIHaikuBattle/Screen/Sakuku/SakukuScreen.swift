@@ -14,6 +14,20 @@ struct Haiku: Hashable, Identifiable {
     let middle: String
     let lower: String
     let name: String
+    
+    init(upper: String, middle: String, lower: String, name: String) {
+        self.upper = upper
+        self.middle = middle
+        self.lower = lower
+        self.name = name
+    }
+    
+    init(haikuModel: HaikuModel) {
+        self.upper = haikuModel.upper
+        self.middle = haikuModel.middle
+        self.lower = haikuModel.lower
+        self.name = haikuModel.name
+    }
 }
 
 struct SakukuScreen: View {
