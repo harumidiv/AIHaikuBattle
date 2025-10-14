@@ -67,16 +67,18 @@ struct HaikuCardView: View {
                 let newHaiku = HaikuModel(haiku: haiku)
                 
                 if isFavorite {
-                    context.insert(newHaiku)
-                } else {
                     if let haikuToDelete = haikus.first(where: { $0 == newHaiku }) {
                         context.delete(haikuToDelete)
                     }
+                } else {
+                    context.insert(newHaiku)
                 }
                 
             }, label: {
                 Image(systemName: isFavorite ? "star.fill" : "star")
                     .font(.system(size: 24))
+                    .foregroundColor(.yellow)
+                    .symbolEffect(.bounce, value: isFavorite)
             })
             .sensoryFeedback(.impact, trigger: isFavorite)
             

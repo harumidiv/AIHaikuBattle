@@ -172,15 +172,9 @@ struct SakukuScreen: View {
     
     private func nextSakukuButton(title: String) -> some View {
         Button(action: {
-            // 1. haikuListに新しい俳句を追加
-            // haikuListが@Bindingであれば、この変更は親Viewにも伝わる
             haikuList.append(Haiku(upper: upper, middle: middle, lower: lower, name: name))
             
-            // 2. 入力フィールドをクリア
-            upper = ""
-            middle = ""
-            lower = ""
-            name = ""
+            initInputText()
             
             // ここは切り替わる前なのでai動線で次へボタンが呼ばれたタイミングで通信を走らせる
             if isPresnetType == .ai {
@@ -279,6 +273,15 @@ struct SakukuScreen: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
+    }
+    
+    private func initInputText() {
+        upper = ""
+        middle = ""
+        lower = ""
+        name = ""
+        
+        // TODO: キーボードのフォーカスを外す
     }
 }
 
