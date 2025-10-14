@@ -38,14 +38,6 @@ struct TitleScreen: View {
     
     private func content() -> some View {
         VStack(spacing: 30) {
-            HStack {
-                Spacer()
-                
-                Button("", systemImage: "info.circle") {
-//                    isPresnetType = .tutorial
-                }
-            }
-            
             VStack(alignment: .center, spacing: 10) {
                 HStack {
                     Spacer()

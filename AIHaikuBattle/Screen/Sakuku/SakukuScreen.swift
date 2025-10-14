@@ -30,6 +30,26 @@ struct Haiku: Hashable, Identifiable {
     }
 }
 
+enum SakukuFocusFields: Hashable {
+    case upper
+    case middle
+    case lower
+    case name
+    
+    func next() -> SakukuFocusFields? {
+        switch self {
+        case .upper:
+            return .middle
+        case .middle:
+            return .lower
+        case .lower:
+            return .name
+        case .name:
+            return nil
+        }
+    }
+}
+
 struct SakukuScreen: View {
     enum SakukuTransition: Hashable {
         case aiScore
@@ -48,6 +68,10 @@ struct SakukuScreen: View {
     
     private let session = LanguageModelSession()
     
+    @State private var keyboardIsPresented: Bool = false
+    @FocusState private var focusedField: SakukuFocusFields?
+    @State private var isNeedNextBotton: Bool = false
+    
     var navigationTitle: String {
         switch isPresnetType {
         case .single:
@@ -56,7 +80,6 @@ struct SakukuScreen: View {
             if haikuList.isEmpty {
                 return "あなたの番"
             } else {
-                // 💣⚠️この文字で判定処理入れているのでいじる時注意
                 return "AIの番"
             }
         case .friend:
@@ -123,6 +146,17 @@ struct SakukuScreen: View {
                         .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
                     }
                 }
+            }
+        }
+        .withKeyboardToolbar(keyboardIsPresented: $keyboardIsPresented, isNeedNextBotton: $isNeedNextBotton) {
+            focusedField = focusedField?.next()
+        }
+        .onChange(of: focusedField) {
+            switch focusedField {
+            case .upper, .middle, .lower:
+                isNeedNextBotton = true
+            default:
+                isNeedNextBotton = false
             }
         }
     }
@@ -254,6 +288,7 @@ struct SakukuScreen: View {
                 TextField("", text: $upper)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .upper)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -263,6 +298,7 @@ struct SakukuScreen: View {
                 TextField("", text: $middle)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .middle)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -272,6 +308,7 @@ struct SakukuScreen: View {
                 TextField("", text: $lower)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .lower)
             }
             
             Divider()
@@ -283,6 +320,7 @@ struct SakukuScreen: View {
                 TextField("", text: $name)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isAI)
+                    .focused($focusedField, equals: .name)
             }
         }
         .padding(.horizontal, 20)
@@ -290,12 +328,12 @@ struct SakukuScreen: View {
     }
     
     private func initInputText() {
+        focusedField = nil
+        
         upper = ""
         middle = ""
         lower = ""
-        name = ""
-        
-        // TODO: キーボードのフォーカスを外す
+        name = ""        
     }
 }
 
