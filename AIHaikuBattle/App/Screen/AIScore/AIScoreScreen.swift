@@ -12,7 +12,7 @@ import SwiftData
 struct AIScoreScreen: View {
     @StateObject var viewState = VoiceBoxState()
     @Binding var isPresnetType: PresentType?
-
+    
     let haiku: Haiku
     var evaluation: HaikuEvaluation?
     
@@ -95,6 +95,7 @@ struct AIScoreScreen: View {
                     }, label: {
                         Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
+                            .padding()
                     })
                     .disabled(viewState.isPlaying)
                     
@@ -154,9 +155,19 @@ struct AIScoreScreen: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("AIによる解説")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
+                        Button(action: {
+                            viewState.playVoice(message: haikuEvaluation.comment)
+                        }, label: {
+                            
+                            HStack {
+                                Image(systemName: "speaker.wave.2.fill")
+                                    .font(.system(size: 24))
+                                Text("AIによる解説")
+                                    .font(.headline)
+                                    .foregroundColor(.secondary)
+                            }
+                        })
+                        .disabled(viewState.isPlaying)
                         
                         Text(haikuEvaluation.comment)
                             .font(.body)

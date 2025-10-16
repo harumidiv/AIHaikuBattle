@@ -47,7 +47,9 @@ struct BattleScreen: View {
                                             .frame(width: 300, height: 300)
                                     }
                                 }
+                                    .allowsHitTesting(false)
                             )
+                            
                     }
                 }
                 .toolbar {

@@ -119,55 +119,54 @@ struct SakukuScreen: View {
                     }
                 }
                 
-                switch isPresnetType {
-                case .single:
-                    ToolbarItem(placement: .topBarTrailing) {
-                        aiScoreButton
-                    }
-                case .ai:
-                    if isAI && !session.isResponding {
+                if let isPresnetType {
+                    switch isPresnetType {
+                    case .single:
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button(action: {
-                                path.append(SakukuTransition.battle)
-                            }) {
-                                HStack {
-                                    Image(systemName: "burst")
-                                    Text("バトル！")
-                                }
-                            }
-                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                            aiScoreButton
                         }
-                    }
-                    
-                    if haikuList.isEmpty {
+                    case .ai:
+                        if isAI && !session.isResponding {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button(action: {
+                                    path.append(SakukuTransition.battle)
+                                }) {
+                                    HStack {
+                                        Image(systemName: "burst")
+                                        Text("バトル！")
+                                    }
+                                }
+                                .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                            }
+                        }
+                        
+                        if haikuList.isEmpty {
+                            ToolbarSpacer(.flexible, placement: .bottomBar)
+                            ToolbarItem(placement: .bottomBar) {
+                                nextSakukuButton(title: "AIに回す")
+                            }
+                        }
+                        
+                    case .friend:
+                        if haikuList.count >= 1 {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button(action: {
+                                    path.append(SakukuTransition.battle)
+                                }) {
+                                    HStack {
+                                        Image(systemName: "burst")
+                                        Text("バトル！")
+                                    }
+                                }
+                                .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                            }
+                        }
+                        
                         ToolbarSpacer(.flexible, placement: .bottomBar)
                         ToolbarItem(placement: .bottomBar) {
-                            nextSakukuButton(title: "AIに回す")
+                            nextSakukuButton(title: "次のともだちに回す")
                         }
                     }
-                    
-                case .friend:
-                    if haikuList.count >= 1 {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button(action: {
-                                path.append(SakukuTransition.battle)
-                            }) {
-                                HStack {
-                                    Image(systemName: "burst")
-                                    Text("バトル！")
-                                }
-                            }
-                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
-                        }
-                    }
-                    
-                    ToolbarSpacer(.flexible, placement: .bottomBar)
-                    ToolbarItem(placement: .bottomBar) {
-                        nextSakukuButton(title: "次のともだちに回す")
-                    }
-                    
-                case nil:
-                    EmptyView()
                 }
             }
         }
@@ -261,7 +260,7 @@ struct SakukuScreen: View {
             path.append(SakukuTransition.aiScore)
             
         } label: {
-            Text("結果を見る")
+            Text("AI採点")
         }
         .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
     }
