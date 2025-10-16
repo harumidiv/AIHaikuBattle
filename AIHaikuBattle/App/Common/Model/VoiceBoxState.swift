@@ -12,6 +12,7 @@ import voicevox_core
 final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var message: String = ""
     @Published var isPlaying: Bool = false
+    @Published var isLoading: Bool = false
 
     private var synthesizer: OpaquePointer?
     private var audioPlayer: AVAudioPlayer?
@@ -128,6 +129,7 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     func playVoice(message: String) {
         isPlaying = true
+        isLoading = true
         
         // Generate
         let ttsOptions = voicevox_make_default_tts_options()
@@ -153,6 +155,8 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
             audioPlayer = try AVAudioPlayer(data: data)
             audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
+            isLoading = false
+            
             audioPlayer?.play()
         } catch {
             print("Failed to Play Audio: \(error)")

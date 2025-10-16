@@ -32,6 +32,7 @@ struct BattleScreen: View {
             if session.isResponding || haikuList.count != haikuScoreList.count {
                 Spacer()
                 ProgressView()
+                    .controlSize(.large)
                 Spacer()
             } else {
                 ScrollView {

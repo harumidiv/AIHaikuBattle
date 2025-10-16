@@ -102,6 +102,7 @@ struct SakukuScreen: View {
                         
                         if session.isResponding {
                             ProgressView()
+                                .controlSize(.large)
                         }
                     }
                 } else {

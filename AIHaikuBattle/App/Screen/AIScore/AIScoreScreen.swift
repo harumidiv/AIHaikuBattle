@@ -146,6 +146,7 @@ struct AIScoreScreen: View {
         if session.isResponding {
             Spacer()
             ProgressView()
+                .controlSize(.large)
             Spacer()
         } else {
             VStack(alignment: .leading, spacing: 20) {
