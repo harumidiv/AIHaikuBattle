@@ -17,6 +17,8 @@ struct HaikuScore: Identifiable {
 struct BattleScreen: View {
     @Binding var isPresnetType: PresentType?
     
+    @StateObject var voiceBoxState = VoiceBoxState()
+    
     let haikuList: [Haiku]
     
     @State private var haikuScoreList: [HaikuScore] = []
@@ -89,7 +91,7 @@ struct BattleScreen: View {
     
     private func haikuView(haikuScore: HaikuScore) -> some View {
         VStack(spacing: 0) {
-            HaikuCardView(haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
+            HaikuCardView(voiceBoxState: voiceBoxState, haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
                 .frame(height: 200)
                 .padding()
             

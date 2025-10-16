@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct AIScoreScreen: View {
-    @StateObject var viewState = VoiceBoxState()
+    @StateObject var voiceBoxState = VoiceBoxState()
     @Binding var isPresnetType: PresentType?
     
     let haiku: Haiku
@@ -33,7 +33,7 @@ struct AIScoreScreen: View {
     var body: some View {
         content()
             .onAppear {
-                viewState.setup()
+                voiceBoxState.setup()
             }
             .task {
                 if evaluation == nil {
@@ -72,7 +72,7 @@ struct AIScoreScreen: View {
     
     private func content() -> some View {
         VStack {
-            HaikuCardView(haiku: haiku)
+            HaikuCardView(voiceBoxState: voiceBoxState, haiku: haiku)
                 .padding()
                 .frame(height: 300)
             
@@ -91,13 +91,13 @@ struct AIScoreScreen: View {
                 ZStack(alignment: .bottomLeading) {
                     Button(action: {
                         let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
-                        viewState.playVoice(message: text)
+                        voiceBoxState.playVoice(message: text)
                     }, label: {
                         Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
                             .padding()
                     })
-                    .disabled(viewState.isPlaying)
+                    .disabled(voiceBoxState.isPlaying)
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)
@@ -156,7 +156,7 @@ struct AIScoreScreen: View {
                     
                     VStack(alignment: .leading, spacing: 5) {
                         Button(action: {
-                            viewState.playVoice(message: haikuEvaluation.comment)
+                            voiceBoxState.playVoice(message: haikuEvaluation.comment)
                         }, label: {
                             
                             HStack {
@@ -167,7 +167,7 @@ struct AIScoreScreen: View {
                                     .foregroundColor(.secondary)
                             }
                         })
-                        .disabled(viewState.isPlaying)
+                        .disabled(voiceBoxState.isPlaying)
                         
                         Text(haikuEvaluation.comment)
                             .font(.body)

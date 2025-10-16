@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HaikuCardView: View {
-    @StateObject var viewState = VoiceBoxState()
+    @ObservedObject var voiceBoxState: VoiceBoxState
     @Environment(\.modelContext) private var context
     @Query private var haikus: [HaikuModel]
     
@@ -26,7 +26,7 @@ struct HaikuCardView: View {
     var body: some View {
         haikuView()
             .onAppear {
-                viewState.setup()
+                voiceBoxState.setup()
             }
     }
     
@@ -37,12 +37,12 @@ struct HaikuCardView: View {
                 ZStack(alignment: .bottomLeading) {
                     Button(action: {
                         let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
-                        viewState.playVoice(message: text)
+                        voiceBoxState.playVoice(message: text)
                     }, label: {
                         Image(systemName: "speaker.wave.2.fill")
                             .font(.system(size: 24))
                     })
-                    .disabled(viewState.isPlaying)
+                    .disabled(voiceBoxState.isPlaying)
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)

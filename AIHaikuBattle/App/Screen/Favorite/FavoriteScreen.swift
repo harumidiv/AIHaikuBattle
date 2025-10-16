@@ -12,13 +12,15 @@ struct FavoriteScreen: View {
     @Environment(\.modelContext) private var context
     @Query private var haikus: [HaikuModel]
     
+    @StateObject var voiceBoxState = VoiceBoxState()
+    
     @Binding var isPresented: Bool
     
     var body: some View {
         NavigationView {
             ScrollView {
                 ForEach(haikus) { haiku in
-                    HaikuCardView(haiku: Haiku(haikuModel: haiku))
+                    HaikuCardView(voiceBoxState: voiceBoxState, haiku: Haiku(haikuModel: haiku))
                         .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)

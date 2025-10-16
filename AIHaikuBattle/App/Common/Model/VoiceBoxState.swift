@@ -127,6 +127,8 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
     
     func playVoice(message: String) {
+        isPlaying = true
+        
         // Generate
         let ttsOptions = voicevox_make_default_tts_options()
         let text = strdup(message)
@@ -152,10 +154,6 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
             audioPlayer?.delegate = self
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
-            
-            DispatchQueue.main.async {
-                self.isPlaying = true
-            }
         } catch {
             print("Failed to Play Audio: \(error)")
             return
