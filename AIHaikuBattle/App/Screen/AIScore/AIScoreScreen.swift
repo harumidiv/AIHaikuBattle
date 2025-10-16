@@ -145,9 +145,9 @@ struct AIScoreScreen: View {
                 }
                 
             }, label: {
-                Image(systemName: isFavorite ? "star.fill" : "star")
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 24))
-                    .foregroundColor(.yellow)
+                    .foregroundColor(isFavorite ? .orange : .gray)
                     .symbolEffect(.bounce, value: isFavorite)
             })
             .sensoryFeedback(.impact, trigger: isFavorite)

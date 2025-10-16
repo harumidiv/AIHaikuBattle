@@ -38,21 +38,6 @@ struct BattleScreen: View {
                 ScrollView {
                     ForEach(haikuScoreList) { haikuScore in
                         haikuView(haikuScore: haikuScore)
-                            .overlay(
-                                Group {
-                                    if haikuScore.evaluation.score == topScore {
-                                        Image(isDraw ? "draw" : "win")
-                                            .resizable()
-                                            .frame(width: 300, height: 300)
-                                    } else {
-                                        Image("lose")
-                                            .resizable()
-                                            .frame(width: 300, height: 300)
-                                    }
-                                }
-                                    .allowsHitTesting(false)
-                            )
-                            
                     }
                 }
                 .toolbar {
@@ -96,15 +81,39 @@ struct BattleScreen: View {
     private func haikuView(haikuScore: HaikuScore) -> some View {
         VStack(spacing: 0) {
             HaikuCardView(voiceBoxState: voiceBoxState, haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
-                .frame(height: 200)
+                .frame(minHeight: 200)
                 .padding()
-            
+                .background(
+                        Image("background")
+                            .resizable()
+                            .scaledToFill()
+                    )
+                .clipShape(
+                                UnevenRoundedRectangle(
+                                    topLeadingRadius: 16,
+                                    topTrailingRadius: 16
+                                )
+                            )
+                .overlay(
+                    Group {
+                        if haikuScore.evaluation.score == topScore {
+                            Image(isDraw ? "draw" : "win")
+                                .resizable()
+                                .frame(width: 300, height: 300)
+                        } else {
+                            Image("lose")
+                                .resizable()
+                                .frame(width: 300, height: 300)
+                        }
+                    }
+                    .allowsHitTesting(false)
+                )
             
             Rectangle()
                 .fill(.primary)
                 .frame(height: 1)
                 .edgesIgnoringSafeArea(.horizontal)
-                .padding(.top)
+            
             HStack {
                 Spacer()
                 Text("\(haikuScore.evaluation.score)点")
