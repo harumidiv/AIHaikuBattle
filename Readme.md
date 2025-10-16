@@ -6,7 +6,7 @@
 ---
 
 <p align="center">
-  <img src="https://placehold.co/800x400/F7F9FC/333333?text=AI俳句バトル+スクリーンショット&font=noto-sans-jp" alt="AI俳句バトル アプリスクリーンショット" width="80%">
+  <img src="https://github.com/user-attachments/assets/210df2fa-38cb-468b-b71d-c05ad957986f" alt="AI俳句バトル アプリスクリーンショット" width="80%">
 </p>
 
 ---
@@ -59,9 +59,7 @@ AIに勝利した句やお気に入りの句を保存して、
 ## 🚀 ダウンロード
 
 <!-- Add links to the App Store and Google Play badges -->
-[![App Storeでダウンロード](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](YOUR_APP_STORE_LINK)  
-[![Google Playでダウンロード](https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg)](YOUR_GOOGLE_PLAY_LINK)
-
+[![App Storeでダウンロード](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/jp/app/id6753979897)  
 ---
 
 ## 💚 クレジット
@@ -69,8 +67,6 @@ AIに勝利した句やお気に入りの句を保存して、
 本アプリでは、以下のソフトウェアを使用しています。
 
 - **VOICEVOX: ずんだもん**
-
-© 2025 [Your Name or Company Name]
 
 ---
 
