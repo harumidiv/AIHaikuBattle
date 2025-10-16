@@ -22,7 +22,7 @@ struct TitleScreen: View {
     var body: some View {
         NavigationView {
             content()
-                .navigationTitle("AI俳句バトル")
+                .navigationTitle("AI俳句バトル💥")
         }
             .fullScreenCover(item: $isPresnetType) { type in
                 switch type {
