@@ -12,31 +12,31 @@ import voicevox_core
 final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var message: String = ""
     @Published var isPlaying: Bool = false
-    @Published var isLoading: Bool = false
-
+    @Published var isLoadingText: String = ""
+    
     private var synthesizer: OpaquePointer?
     private var audioPlayer: AVAudioPlayer?
-
+    
     func setup() {
         setupAudioSession()
         
         // Resource URL
         let resourcePath = Bundle.main.resourcePath!
         let resourceURL = URL(fileURLWithPath: resourcePath)
-
+        
         // Documents URL
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // リソースURL
         print("ResourcePath: \(resourceURL.path())")
         print("DocumentsPath: \(documentsURL.path())")
-
+        
         // Create Voice Model Directory
         let voiceModelDirectoryName = "vvms"
         let vvmsDirectory = documentsURL.appendingPathComponent(voiceModelDirectoryName)
         try! createDirectoryIfNotExist(at: vvmsDirectory)
         print("VoiceModelDirectoryPath: \(vvmsDirectory.path())")
-
+        
         // Copy to Voice Model File
         let voiceModelFileName = "0.vvm"
         let voiceModelFileURL = vvmsDirectory.appendingPathComponent(voiceModelFileName)
@@ -45,7 +45,7 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
             to: voiceModelFileURL
         )
         print("VoiceFilePath: \(voiceModelFileURL.path())")
-
+        
         // Copy to Open JTalk
         let openJTalkDirectoryName = "open_jtalk_dic_utf_8-1.11"
         let openJTalkDirectory = documentsURL.appendingPathComponent(openJTalkDirectoryName)
@@ -68,7 +68,7 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
         print("Generate VoicevoxInitializeOptions")
         print("Acceleration Mode: \(initializeOptions.acceleration_mode)")
         print("Cpu Num Threads: \(initializeOptions.cpu_num_threads)")
-
+        
         // Generate Onnxruntime
         var onnxruntime: OpaquePointer? = voicevox_onnxruntime_get()
         
@@ -128,44 +128,59 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
     
     func playVoice(message: String) {
-        isPlaying = true
-        isLoading = true
+        self.isLoadingText = message
+        self.isPlaying = true
         
-        // Generate
-        let ttsOptions = voicevox_make_default_tts_options()
-        let text = strdup(message)
-        let styleId = 3
-        var wavLength: UInt = 0
-        var wavBuffer: UnsafeMutablePointer<UInt8>? = nil
-        let synthesizerTtsResultCode = voicevox_synthesizer_tts(synthesizer, text, VoicevoxStyleId(styleId), ttsOptions, &wavLength, &wavBuffer)
-        guard synthesizerTtsResultCode == 0 else {
-            print("Synthesizer Text to Speach Failed")
-            return
-        }
-        
-        // Load WAV Data
-        guard let wavBuffer = wavBuffer else {
-            print("Wave Buffer is nil")
-            return
-        }
-        let data = Data(bytes: wavBuffer, count: Int(wavLength))
-
-        // Play Audio
-        do {
-            audioPlayer = try AVAudioPlayer(data: data)
-            audioPlayer?.delegate = self
-            audioPlayer?.prepareToPlay()
-            isLoading = false
+        // 2. 重い音声合成処理をバックグラウンドスレッドに任せる
+        DispatchQueue.global(qos: .userInitiated).async {
+            let ttsOptions = voicevox_make_default_tts_options()
+            let text = strdup(message)
+            let styleId = 3
+            var wavLength: UInt = 0
+            var wavBuffer: UnsafeMutablePointer<UInt8>? = nil
             
-            audioPlayer?.play()
-        } catch {
-            print("Failed to Play Audio: \(error)")
-            return
+            // この関数が完了するまでUIはフリーズしない
+            let synthesizerTtsResultCode = voicevox_synthesizer_tts(self.synthesizer, text, VoicevoxStyleId(styleId), ttsOptions, &wavLength, &wavBuffer)
+            
+            free(text) // Cの関数で確保したメモリは解放する
+            
+            // エラー処理
+            guard synthesizerTtsResultCode == 0, let wavBuffer = wavBuffer else {
+                print("Synthesizer Text to Speach Failed")
+                // 失敗した場合も、メインスレッドでUIの状態を元に戻す
+                DispatchQueue.main.async {
+                    self.isLoadingText = ""
+                    self.isPlaying = false
+                }
+                return
+            }
+            
+            let data = Data(bytes: wavBuffer, count: Int(wavLength))
+            voicevox_wav_free(wavBuffer) // ライブラリが確保したメモリを解放する
+            
+            // 3. 処理が終わったら、メインスレッドに戻ってUIを更新し、音声を再生する
+            DispatchQueue.main.async {
+                do {
+                    self.audioPlayer = try AVAudioPlayer(data: data)
+                    self.audioPlayer?.delegate = self
+                    self.audioPlayer?.prepareToPlay()
+                    
+                    // 読み込みが完了したので、ProgressViewを非表示にする
+                    self.isLoadingText = ""
+                    
+                    // 音声を再生する
+                    self.audioPlayer?.play()
+                } catch {
+                    print("Failed to Play Audio: \(error)")
+                    // エラーが起きてもUIの状態を元に戻す
+                    self.isLoadingText = ""
+                    self.isPlaying = false
+                }
+            }
         }
-        return
     }
     
-   private func createDirectoryIfNotExist(at url: URL) throws {
+    private func createDirectoryIfNotExist(at url: URL) throws {
         // すでに存在していれば何もしない
         if FileManager.default.fileExists(atPath: url.path, isDirectory: nil) {
             return
@@ -188,7 +203,7 @@ final class VoiceBoxState: NSObject, ObservableObject, AVAudioPlayerDelegate {
             self.isPlaying = false
         }
     }
-
+    
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         DispatchQueue.main.async {
             self.isPlaying = false

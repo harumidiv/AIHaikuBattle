@@ -66,6 +66,9 @@ struct BattleScreen: View {
                 }
             }
         }
+        .onAppear {
+            voiceBoxState.setup()
+        }
         .navigationTitle("バトル結果")
         .task {
             if !haikuScoreList.isEmpty { return }

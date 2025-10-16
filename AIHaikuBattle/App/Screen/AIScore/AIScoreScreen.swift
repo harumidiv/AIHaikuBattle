@@ -89,15 +89,22 @@ struct AIScoreScreen: View {
             VStack {
                 Spacer()
                 ZStack(alignment: .bottomLeading) {
-                    Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
-                        voiceBoxState.playVoice(message: text)
-                    }, label: {
-                        Image(systemName: "speaker.wave.2.fill")
-                            .font(.system(size: 24))
-                            .padding()
-                    })
-                    .disabled(voiceBoxState.isPlaying)
+                    let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
+                    if voiceBoxState.isLoadingText == text {
+                        ProgressView()
+                            .frame(width: 32, height: 32)
+                    } else {
+                        Button(action: {
+                            
+                            voiceBoxState.playVoice(message: text)
+                        }, label: {
+                            Image(systemName: "speaker.wave.2.fill")
+                                .font(.system(size: 24))
+                                .padding()
+                        })
+                        .disabled(voiceBoxState.isPlaying)
+                        .frame(width: 32, height: 32)
+                    }
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)
@@ -156,19 +163,24 @@ struct AIScoreScreen: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Button(action: {
-                            voiceBoxState.playVoice(message: haikuEvaluation.comment)
-                        }, label: {
-                            
-                            HStack {
-                                Image(systemName: "speaker.wave.2.fill")
-                                    .font(.system(size: 24))
-                                Text("AIによる解説")
-                                    .font(.headline)
-                                    .foregroundColor(.secondary)
-                            }
-                        })
-                        .disabled(voiceBoxState.isPlaying)
+                        if voiceBoxState.isLoadingText == haikuEvaluation.comment {
+                            ProgressView()
+                                .controlSize(.large)
+                        } else {
+                            Button(action: {
+                                voiceBoxState.playVoice(message: haikuEvaluation.comment)
+                            }, label: {
+                                
+                                HStack {
+                                    Image(systemName: "speaker.wave.2.fill")
+                                        .font(.system(size: 24))
+                                    Text("AIによる解説")
+                                        .font(.headline)
+                                        .foregroundColor(.secondary)
+                                }
+                            })
+                            .disabled(voiceBoxState.isPlaying)
+                        }
                         
                         Text(haikuEvaluation.comment)
                             .font(.body)

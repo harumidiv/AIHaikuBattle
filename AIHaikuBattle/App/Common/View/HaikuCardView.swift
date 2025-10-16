@@ -25,9 +25,6 @@ struct HaikuCardView: View {
     
     var body: some View {
         haikuView()
-            .onAppear {
-                voiceBoxState.setup()
-            }
     }
     
     private func haikuView() -> some View {
@@ -35,14 +32,20 @@ struct HaikuCardView: View {
             VStack {
                 Spacer()
                 ZStack(alignment: .bottomLeading) {
-                    Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
-                        voiceBoxState.playVoice(message: text)
-                    }, label: {
-                        Image(systemName: "speaker.wave.2.fill")
-                            .font(.system(size: 24))
-                    })
-                    .disabled(voiceBoxState.isPlaying)
+                    let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
+                    if voiceBoxState.isLoadingText == text {
+                        ProgressView()
+                            .frame(width: 32, height: 32)
+                    } else {
+                        Button(action: {
+                            voiceBoxState.playVoice(message: text)
+                        }, label: {
+                            Image(systemName: "speaker.wave.2.fill")
+                                .font(.system(size: 24))
+                        })
+                        .disabled(voiceBoxState.isPlaying)
+                        .frame(width: 32, height: 32)
+                    }
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)

@@ -39,6 +39,9 @@ struct FavoriteScreen: View {
                 }
             }
         }
+        .onAppear {
+            voiceBoxState.setup()
+        }
     }
 }
 
