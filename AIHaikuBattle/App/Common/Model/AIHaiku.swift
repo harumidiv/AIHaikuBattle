@@ -10,18 +10,18 @@ import FoundationModels
 @Generable
 struct AIHaiku {
     @Guide(description: """
-    5文字程度の俳句の上の句
+    5文字の上の句
     """)
     let upper: String
     
     @Guide(description: """
-    7文字程度の俳句の中の句
+    7文字の中の句
     """)
     let middle: String
     
     
     @Guide(description: """
-    5文字程度の俳句の下の句
+    5文字の下の句
     """)
     let lower: String
 }
