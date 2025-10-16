@@ -71,10 +71,17 @@ struct AIScoreScreen: View {
     }
     
     private func content() -> some View {
-        VStack {
+        VStack(spacing: 0) {
             HaikuCardView(voiceBoxState: voiceBoxState, haiku: haiku)
                 .padding()
                 .frame(height: 300)
+                .background(
+                    Image("background")
+                        .resizable()
+                        .scaledToFill()
+
+                )
+                .clipped()
             
             
             Divider()
@@ -138,9 +145,9 @@ struct AIScoreScreen: View {
                 }
                 
             }, label: {
-                Image(systemName: isFavorite ? "star.fill" : "star")
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
                     .font(.system(size: 24))
-                    .foregroundColor(.yellow)
+                    .foregroundColor(isFavorite ? .orange : .gray)
                     .symbolEffect(.bounce, value: isFavorite)
             })
             .sensoryFeedback(.impact, trigger: isFavorite)

@@ -66,7 +66,12 @@ struct SakukuScreen: View {
     @State private var lower = ""
     @State private var name = ""
     
-    private let session = LanguageModelSession()
+    private let session =  LanguageModelSession(
+        instructions: """
+            あなたは俳句の名人です
+            """
+    )
+
     
     @State private var keyboardIsPresented: Bool = false
     @FocusState private var focusedField: SakukuFocusFields?
@@ -233,7 +238,7 @@ struct SakukuScreen: View {
                 Task {
                     do {
                         let result = try await session.respond(
-                            to: "自由に俳句を作ってください",
+                            to: "五七五の音律を守り季語を取り入れた俳句を作ってください",
                             generating: AIHaiku.self
                         )
                         name = "AI詩人"
