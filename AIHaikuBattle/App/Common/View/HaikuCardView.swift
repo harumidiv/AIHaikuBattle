@@ -46,7 +46,7 @@ struct HaikuCardView: View {
                     
                     
                     VerticalTextView(haiku.name, spacing: 0)
-                        .font(.hudemoji(size: 12))
+                        .font(.hudemoji(size: 18))
                         .offset(x: 40, y: -40)
                 }
             }
@@ -54,13 +54,13 @@ struct HaikuCardView: View {
             Spacer()
             
             VerticalTextView(haiku.lower, spacing: 0)
-                .font(.hudemoji(size: 24))
+                .font(.hudemoji(size: 32))
                 .padding(.trailing)
             VerticalTextView(haiku.middle, spacing: 0)
-                .font(.hudemoji(size: 24))
+                .font(.hudemoji(size: 32))
                 .padding(.trailing)
             VerticalTextView(haiku.upper, spacing: 0)
-                .font(.hudemoji(size: 24))
+                .font(.hudemoji(size: 32))
             
             Spacer()
             
