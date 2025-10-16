@@ -22,6 +22,9 @@ struct BattleScreen: View {
     @State private var haikuScoreList: [HaikuScore] = []
     private let session = LanguageModelSession()
     
+    @State private var topScore: Int = 0
+    @State private var isDraw: Bool = false
+    
     var body: some View {
         Group {
             if session.isResponding || haikuList.count != haikuScoreList.count {
@@ -32,6 +35,19 @@ struct BattleScreen: View {
                 ScrollView {
                     ForEach(haikuScoreList) { haikuScore in
                         haikuView(haikuScore: haikuScore)
+                            .overlay(
+                                Group {
+                                    if haikuScore.evaluation.score == topScore {
+                                        Image(isDraw ? "draw" : "win")
+                                            .resizable()
+                                            .frame(width: 300, height: 300)
+                                    } else {
+                                        Image("lose")
+                                            .resizable()
+                                            .frame(width: 300, height: 300)
+                                    }
+                                }
+                            )
                     }
                 }
                 .toolbar {
@@ -63,6 +79,9 @@ struct BattleScreen: View {
             }
             
             haikuScoreList.sort { $0.evaluation.score > $1.evaluation.score }
+            
+            topScore = haikuScoreList.first?.evaluation.score ?? 0
+            isDraw = haikuScoreList[0].evaluation.score == haikuScoreList[1].evaluation.score
         }
     }
     
@@ -71,7 +90,7 @@ struct BattleScreen: View {
             HaikuCardView(haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
                 .frame(height: 200)
                 .padding()
-                
+            
             HStack {
                 Text("\(haikuScore.evaluation.score)点")
                 
