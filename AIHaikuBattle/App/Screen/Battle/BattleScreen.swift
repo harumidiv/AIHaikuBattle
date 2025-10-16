@@ -88,24 +88,39 @@ struct BattleScreen: View {
     }
     
     private func haikuView(haikuScore: HaikuScore) -> some View {
-        VStack {
+        VStack(spacing: 0) {
             HaikuCardView(haiku: .init(upper: haikuScore.haiku.upper, middle: haikuScore.haiku.middle, lower: haikuScore.haiku.lower, name: haikuScore.haiku.name), haikuFont: .title2, nameFont: .caption)
                 .frame(height: 200)
                 .padding()
             
+            
+            Rectangle()
+                .fill(.primary)
+                .frame(height: 1)
+                .edgesIgnoringSafeArea(.horizontal)
+                .padding(.top)
             HStack {
+                Spacer()
                 Text("\(haikuScore.evaluation.score)点")
+                    .font(.headline)
+                Spacer()
                 
-                Divider()
+                Rectangle()
+                    .fill(.primary)
+                    .frame(width: 1)
+                    .edgesIgnoringSafeArea(.vertical)
                 
+                Spacer()
                 NavigationLink {
                     AIScoreScreen(isPresnetType: $isPresnetType, haiku: haikuScore.haiku, evaluation: haikuScore.evaluation)
                     
                 } label: {
-                    Text("詳細を見る")
+                    Text("AI解説を見る")
                 }
+                
+                Spacer()
             }
-            .frame(height: 30)
+            .frame(height: 60)
         }
         .overlay(
             RoundedRectangle(cornerRadius: 16)
