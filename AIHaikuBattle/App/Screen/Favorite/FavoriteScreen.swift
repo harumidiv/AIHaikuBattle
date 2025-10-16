@@ -22,10 +22,18 @@ struct FavoriteScreen: View {
                 ForEach(haikus) { haiku in
                     HaikuCardView(voiceBoxState: voiceBoxState, haiku: Haiku(haikuModel: haiku))
                         .padding()
+                        .background(
+                                Image("background")
+                                    .resizable()
+                                    .scaledToFill()
+                            )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
-                                .stroke(.primary, lineWidth: 1)
+                                .stroke(.secondary, lineWidth: 1)
                         )
+                        .padding()
+                        
                 }
             }
             .navigationTitle("お気に入り")

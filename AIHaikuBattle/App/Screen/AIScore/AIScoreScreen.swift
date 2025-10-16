@@ -71,10 +71,17 @@ struct AIScoreScreen: View {
     }
     
     private func content() -> some View {
-        VStack {
+        VStack(spacing: 0) {
             HaikuCardView(voiceBoxState: voiceBoxState, haiku: haiku)
                 .padding()
                 .frame(height: 300)
+                .background(
+                    Image("background")
+                        .resizable()
+                        .scaledToFill()
+
+                )
+                .clipped()
             
             
             Divider()

@@ -64,38 +64,38 @@ struct TitleScreen: View {
             
             Spacer()
         }
+        .padding()
     }
     
     private func gamePlayButton(title: String, description: String, action: @escaping () -> Void) -> some View {
         Button(action: {
             action()
         }) {
-            VStack(spacing: 0) {
-                ZStack {
-                    Text(title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                }
-                .frame(height: 65)
+            VStack(spacing: 8) {
+                Text(title)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity)
                 
-                // 下部の詳細情報
-                VStack(spacing: 8) {
-                    Divider()
-                    
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.vertical, 15)
+                Divider()
+                
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
             }
+            .padding()
+            .background(
+                Image("background")
+                    .resizable()
+                    .scaledToFill()
+            )
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(.primary, lineWidth: 4)
+                    .stroke(.secondary, lineWidth: 4)
             )
-            .shadow(color: .black.opacity(0.2), radius: 5, y: 5)
         }
         .foregroundColor(.primary)
     }
