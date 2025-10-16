@@ -90,7 +90,7 @@ struct AIScoreScreen: View {
                 Spacer()
                 ZStack(alignment: .bottomLeading) {
                     Button(action: {
-                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "       " + haiku.name
+                        let text = haiku.upper + "  " + haiku.middle + "  " + haiku.lower + "     " + haiku.name
                         viewState.playVoice(message: text)
                     }, label: {
                         Image(systemName: "speaker.wave.2.fill")
