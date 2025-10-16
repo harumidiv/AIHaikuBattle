@@ -119,32 +119,55 @@ struct SakukuScreen: View {
                     }
                 }
                 
-                if isAI && !session.isResponding {
+                switch isPresnetType {
+                case .single:
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            path.append(SakukuTransition.battle)
-                        }) {
-                            HStack {
-                                Image(systemName: "burst")
-                                Text("バトル！")
-                            }
-                        }
-                        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                        aiScoreButton
                     }
-                }
-                
-                if isPresnetType == .friend && haikuList.count >= 1 {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            path.append(SakukuTransition.battle)
-                        }) {
-                            HStack {
-                                Image(systemName: "burst")
-                                Text("バトル！")
+                case .ai:
+                    if isAI && !session.isResponding {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                path.append(SakukuTransition.battle)
+                            }) {
+                                HStack {
+                                    Image(systemName: "burst")
+                                    Text("バトル！")
+                                }
                             }
+                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
                         }
-                        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
                     }
+                    
+                    if haikuList.isEmpty {
+                        ToolbarSpacer(.flexible, placement: .bottomBar)
+                        ToolbarItem(placement: .bottomBar) {
+                            nextSakukuButton(title: "AIに回す")
+                        }
+                    }
+                    
+                case .friend:
+                    if haikuList.count >= 1 {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                path.append(SakukuTransition.battle)
+                            }) {
+                                HStack {
+                                    Image(systemName: "burst")
+                                    Text("バトル！")
+                                }
+                            }
+                            .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
+                        }
+                    }
+                    
+                    ToolbarSpacer(.flexible, placement: .bottomBar)
+                    ToolbarItem(placement: .bottomBar) {
+                        nextSakukuButton(title: "次のともだちに回す")
+                    }
+                    
+                case nil:
+                    EmptyView()
                 }
             }
         }
@@ -167,7 +190,6 @@ struct SakukuScreen: View {
             
             Spacer()
             
-            bottomButton
         }
         .navigationDestination(for: SakukuTransition.self) { transition in
             let newHaiku = Haiku(upper: upper, middle: middle, lower: lower, name: name)
@@ -200,24 +222,6 @@ struct SakukuScreen: View {
         }
     }
     
-    var battleButton: some View {
-        Button(action: {
-            path.append(SakukuTransition.battle)
-        }, label: {
-            HStack {
-                Text("バトル！")
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
-        })
-        .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
-        .padding(.horizontal, 40)
-        .padding(.top, 10)
-    }
-    
-    
     private func nextSakukuButton(title: String) -> some View {
         Button(action: {
             haikuList.append(Haiku(upper: upper, middle: middle, lower: lower, name: name))
@@ -247,17 +251,9 @@ struct SakukuScreen: View {
             }
             
         }, label: {
-            HStack {
-                Text(title)
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
+            Text(title)
         })
         .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
-        .padding(.horizontal, 40)
-        .padding(.top, 10)
     }
     
     var aiScoreButton: some View {
@@ -265,17 +261,9 @@ struct SakukuScreen: View {
             path.append(SakukuTransition.aiScore)
             
         } label: {
-            HStack {
-                Text("結果を見る")
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
+            Text("結果を見る")
         }
         .disabled(upper.isEmpty || middle.isEmpty || lower.isEmpty || name.isEmpty)
-        .padding(.horizontal, 40)
-        .padding(.top, 10)
     }
     
     var haikuInputView: some View {
