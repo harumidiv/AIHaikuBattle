@@ -39,13 +39,14 @@ struct AIScoreScreen: View {
                 if evaluation == nil {
                     do {
                         let result = try await session.respond(
-                            to: haiku.upper + haiku.middle + haiku.lower,
+                            to: haiku.upper + " " + haiku.middle + " " + haiku.lower,
                             generating: HaikuEvaluation.self
                         )
                         
                         haikuEvaluation = result.content
                         
                     } catch {
+                        haikuEvaluation = .init(score: -1, comment: "AIが採点に失敗しました")
                         print("エラー:", error.localizedDescription)
                     }
                 } else {
@@ -157,7 +158,7 @@ struct AIScoreScreen: View {
     
     @ViewBuilder
     private func aiEvaluationView() -> some View {
-        if session.isResponding {
+        if session.isResponding || haikuEvaluation == nil {
             Spacer()
             ProgressView()
                 .controlSize(.large)
@@ -194,10 +195,6 @@ struct AIScoreScreen: View {
                             .lineLimit(nil)
                     }
                     
-                } else {
-                    Text("AIが採点に失敗しました")
-                        .font(.body)
-                        .lineLimit(nil)
                 }
                 Spacer()
             }
