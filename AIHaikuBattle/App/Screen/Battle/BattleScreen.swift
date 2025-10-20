@@ -87,6 +87,7 @@ struct BattleScreen: View {
                         Image("background")
                             .resizable()
                             .scaledToFill()
+                            .allowsHitTesting(false)
                     )
                 .clipShape(
                                 UnevenRoundedRectangle(
