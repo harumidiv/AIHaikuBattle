@@ -48,6 +48,21 @@ struct BattleScreen: View {
                             Image(systemName: "house")
                         }
                     }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            haikuScoreList = []
+                            Task {
+                                await judgeAI()
+                            }
+                        }) {
+                            Text("再審査")
+                            Image(systemName: "wand.and.sparkles")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
+                        }
+                    }
                 }
             }
         }
@@ -56,26 +71,30 @@ struct BattleScreen: View {
         }
         .navigationTitle("バトル結果")
         .task {
-            if !haikuScoreList.isEmpty { return }
-            for haiku in haikuList {
-                do {
-                    let result = try await session.respond(
-                        to: haiku.upper + haiku.middle + haiku.lower,
-                        generating: HaikuEvaluation.self
-                    )
-                    
-                    haikuScoreList.append(.init(haiku: haiku, evaluation: result.content))
-                    
-                } catch {
-                    haikuScoreList.append(.init(haiku: haiku, evaluation: .init(score: 0, comment: "AIのスコアリングに失敗しました")))
-                }
-            }
-            
-            haikuScoreList.sort { $0.evaluation.score > $1.evaluation.score }
-            
-            topScore = haikuScoreList.first?.evaluation.score ?? 0
-            isDraw = haikuScoreList[0].evaluation.score == haikuScoreList[1].evaluation.score
+            await judgeAI()
         }
+    }
+    
+    private func judgeAI() async {
+        if !haikuScoreList.isEmpty { return }
+        for haiku in haikuList {
+            do {
+                let result = try await session.respond(
+                    to: haiku.upper + haiku.middle + haiku.lower,
+                    generating: HaikuEvaluation.self
+                )
+                
+                haikuScoreList.append(.init(haiku: haiku, evaluation: result.content))
+                
+            } catch {
+                haikuScoreList.append(.init(haiku: haiku, evaluation: .init(score: 0, comment: "AIのスコアリングに失敗しました")))
+            }
+        }
+        
+        haikuScoreList.sort { $0.evaluation.score > $1.evaluation.score }
+        
+        topScore = haikuScoreList.first?.evaluation.score ?? 0
+        isDraw = haikuScoreList[0].evaluation.score == haikuScoreList[1].evaluation.score
     }
     
     private func haikuView(haikuScore: HaikuScore) -> some View {
