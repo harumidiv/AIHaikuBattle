@@ -116,25 +116,25 @@ struct BattleScreen: View {
                 .edgesIgnoringSafeArea(.horizontal)
             
             HStack {
-                Spacer()
                 Text("\(haikuScore.evaluation.score)点")
                     .font(.headline)
-                Spacer()
+                    .padding(.horizontal)
                 
                 Rectangle()
                     .fill(.primary)
                     .frame(width: 1)
                     .edgesIgnoringSafeArea(.vertical)
                 
-                Spacer()
+                
                 NavigationLink {
                     AIScoreScreen(isPresnetType: $isPresnetType, haiku: haikuScore.haiku, evaluation: haikuScore.evaluation)
                     
                 } label: {
+                    Spacer()
                     Text("AI解説を見る")
+                    Spacer()
                 }
-                
-                Spacer()
+    
             }
             .frame(height: 60)
         }
