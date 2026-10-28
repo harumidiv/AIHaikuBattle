@@ -162,6 +162,7 @@ struct BattleScreen: View {
                 .stroke(.primary, lineWidth: 1)
         )
         .padding()
+        .readableContentWidth()
     }
 }
 

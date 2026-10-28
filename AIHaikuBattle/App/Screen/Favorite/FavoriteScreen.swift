@@ -17,7 +17,7 @@ struct FavoriteScreen: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 ForEach(haikus) { haiku in
                     HaikuCardView(voiceBoxState: voiceBoxState, haiku: Haiku(haikuModel: haiku))
@@ -33,7 +33,7 @@ struct FavoriteScreen: View {
                                 .stroke(.secondary, lineWidth: 1)
                         )
                         .padding()
-                        
+                        .readableContentWidth()
                 }
             }
             .navigationTitle("お気に入り")

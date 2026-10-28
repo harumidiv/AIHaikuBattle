@@ -204,7 +204,7 @@ struct AIScoreScreen: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         AIScoreScreen(isPresnetType: .constant(.ai), haiku: .init(upper: "夏盛り", middle: "ラムネの泡と", lower: "青い空", name: "じゅんぺい"))
     }
 }

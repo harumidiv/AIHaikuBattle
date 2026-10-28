@@ -317,6 +317,7 @@ struct SakukuScreen: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
+        .readableContentWidth()
     }
     
     private func initInputText() {

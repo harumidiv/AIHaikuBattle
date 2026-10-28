@@ -20,7 +20,7 @@ struct TitleScreen: View {
     @State private var isPresentFavoriteScreen: Bool = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             content()
                 .navigationTitle("AI俳句バトル💥")
                 .toolbar {
@@ -65,6 +65,7 @@ struct TitleScreen: View {
             Spacer()
         }
         .padding()
+        .readableContentWidth()
     }
     
     private func gamePlayButton(title: String, description: String, action: @escaping () -> Void) -> some View {
