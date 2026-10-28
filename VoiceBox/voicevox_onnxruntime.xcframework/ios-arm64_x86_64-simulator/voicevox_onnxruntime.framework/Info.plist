@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>voicevox_onnxruntime</string>
 	<key>CFBundleIdentifier</key>
-	<string>jp.hiroshiba.voicevox.voicevox_onnxruntime</string>
+	<string>jp.hiroshiba.voicevox.voicevox.onnxruntime</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
