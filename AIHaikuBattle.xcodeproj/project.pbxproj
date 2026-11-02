@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49AD00012F00000000AD0001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; platformFilter = ios; productRef = 49AD00022F00000000AD0002 /* GoogleMobileAds */; };
 		49DDE6092E9CCF8C000841E6 /* voicevox_core.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DDE6082E9CCF8C000841E6 /* voicevox_core.xcframework */; };
 		49DDE60A2E9CCF8C000841E6 /* voicevox_core.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49DDE6082E9CCF8C000841E6 /* voicevox_core.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		49DDE60D2E9CCF9A000841E6 /* voicevox_onnxruntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DDE60C2E9CCF9A000841E6 /* voicevox_onnxruntime.xcframework */; };
@@ -62,6 +63,7 @@
 			files = (
 				49DDE60D2E9CCF9A000841E6 /* voicevox_onnxruntime.xcframework in Frameworks */,
 				49DDE6092E9CCF8C000841E6 /* voicevox_core.xcframework in Frameworks */,
+				49AD00012F00000000AD0001 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +117,7 @@
 			);
 			name = AIHaikuBattle;
 			packageProductDependencies = (
+				49AD00022F00000000AD0002 /* GoogleMobileAds */,
 			);
 			productName = AIHaikuBattle;
 			productReference = 49C8E1062E9CCDFD0071CC9B /* AIHaikuBattle.app */;
@@ -144,6 +147,9 @@
 			);
 			mainGroup = 49C8E0FD2E9CCDFD0071CC9B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				49AD00032F00000000AD0003 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 49C8E1072E9CCDFD0071CC9B /* Products */;
 			projectDirPath = "";
@@ -297,7 +303,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 24BSY9Z4H5;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -306,6 +312,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AIHaikuBattle/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI俳句バトル";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "あなたの興味に合った広告を表示するために使用します。";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -320,7 +327,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = harumidiv.AIHaikuBattle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -344,7 +351,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 24BSY9Z4H5;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -353,6 +360,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AIHaikuBattle/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI俳句バトル";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "あなたの興味に合った広告を表示するために使用します。";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -367,7 +375,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = harumidiv.AIHaikuBattle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -407,6 +415,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		49AD00032F00000000AD0003 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		49AD00022F00000000AD0002 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49AD00032F00000000AD0003 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 49C8E0FE2E9CCDFD0071CC9B /* Project object */;
 }

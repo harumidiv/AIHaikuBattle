@@ -16,12 +16,18 @@ enum PresentType: Identifiable, Hashable {
 }
 
 struct TitleScreen: View {
+    @Environment(\.isAdReady) private var isAdReady
     @State private var isPresnetType: PresentType?
     @State private var isPresentFavoriteScreen: Bool = false
     
     var body: some View {
         NavigationStack {
             content()
+                .safeAreaInset(edge: .bottom) {
+                    if isAdReady {
+                        BannerAdView(adUnitID: AdUnitID.titleBanner)
+                    }
+                }
                 .navigationTitle("AI俳句バトル💥")
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
