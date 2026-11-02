@@ -18,6 +18,7 @@ struct BattleScreen: View {
     @Binding var isPresnetType: PresentType?
     
     @StateObject var voiceBoxState = VoiceBoxState()
+    @StateObject private var rewardedAdManager = RewardedAdManager(adUnitID: AdUnitID.rejudgeRewarded)
     
     let haikuList: [Haiku]
     
@@ -51,13 +52,15 @@ struct BattleScreen: View {
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
-                            haikuScoreList = []
-                            Task {
-                                await judgeAI()
+                            rewardedAdManager.show {
+                                haikuScoreList = []
+                                Task {
+                                    await judgeAI()
+                                }
                             }
                         }) {
-                            Text("再審査")
-                            Image(systemName: "wand.and.sparkles")
+                            Text("広告を見て再審査")
+                            Image(systemName: "play.rectangle")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 24, height: 24)
@@ -72,6 +75,9 @@ struct BattleScreen: View {
         .navigationTitle("バトル結果")
         .task {
             await judgeAI()
+        }
+        .task {
+            await rewardedAdManager.load()
         }
     }
     
